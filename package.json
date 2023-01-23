@@ -1,0 +1,23 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "dev-import": "node dev-data/data/import-dev-data.js --import",
+    "dev-delete": "node dev-data/data/import-dev-data.js --delete",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "globo",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "mongoose": "^6.7.5",
+    "morgan": "^1.10.0"
+  }
+}
