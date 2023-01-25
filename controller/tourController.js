@@ -156,3 +156,55 @@ export async function getToursStats(request, response){
         });
     }
 }
+
+export async function getMonthlyPlan(request, response){
+    try {
+        const year = Number.parseInt(request.params.year);
+        const plan = await Tour.aggregate([
+            {
+                $unwind: "$startDates"
+            },
+            {
+                $match: { 
+                    startDates: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lte: new Date(`${year}-12-31`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: '$startDates' },
+                    numTourStarts: { $sum: 1 },
+                    tours: { $push: '$name'} //Cria uma array com todos os nomes. $push.
+                }
+            },
+            {
+                $addFields: { month: '$_id'}
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            },
+            {
+                $sort: {
+                    numTourStarts: -1
+                }
+            }
+        ]);
+
+        response.status(200).json({
+            message: 'sucess',
+            numTours: plan.length,
+            data: {
+                plan: plan
+            }
+        });
+    } catch (err) {
+        response.status(404).json({
+            status: 'fail',
+            message: err
+        });
+    }
+}
