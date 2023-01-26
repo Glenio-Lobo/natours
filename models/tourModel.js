@@ -59,7 +59,23 @@ const toursSchema = new mongoose.Schema({
     startDates: {
         type: [Date]
     }
+},  
+// {
+//     virtuals: {
+//         durationWeeks: {
+//             get () {
+//                 return this.duration / 7;
+//             }
+//         }
+//     }
+// },
+{
+    toJSON: { virtuals: true }
 }); 
+
+toursSchema.virtual('durationWeeks').get(function(){
+    return this.duration / 7;
+});
 
 const Tour = mongoose.model('Tour', toursSchema);
 
