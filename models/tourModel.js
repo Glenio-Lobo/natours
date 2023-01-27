@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 const toursSchema = new mongoose.Schema({
     name: {
@@ -6,6 +7,9 @@ const toursSchema = new mongoose.Schema({
         required: [true, 'Must have a name...'],
         unique: true,
         trim: true
+    },
+    slug: {
+        type: String
     },
     duration: {
         type: Number,
@@ -58,6 +62,10 @@ const toursSchema = new mongoose.Schema({
     },
     startDates: {
         type: [Date]
+    },
+    secretTour: {
+        type: Boolean,
+        default: false
     }
 },  
 // {
@@ -77,6 +85,28 @@ toursSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
 });
 
+//Document Middleware
+toursSchema.pre('save', function(next){
+    this.slug = slugify(this.name, {lower: true});
+    next();
+});
+
+//Query Middleware
+toursSchema.pre(/^find/, function(next){
+    this.find({secretTour: {$ne: true}});
+    next();
+});
+
+//Agreggation Middleware
+toursSchema.pre('aggregate', function(next){
+    //Adiciona um novo estágio match no inicio do array
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+
+    console.log(this.pipeline());
+    next();
+});
+
+//Model
 const Tour = mongoose.model('Tour', toursSchema);
 
 export { Tour };
