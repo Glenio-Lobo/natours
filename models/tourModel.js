@@ -1,12 +1,16 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
+import validator from 'validator';
 
 const toursSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Must have a name...'],
         unique: true,
-        trim: true
+        trim: true,
+        maxLength: [40, 'O tamanho máximo do nome deve ser de 40 caracteres.'],
+        minLength: [10, 'O tamanho mínimo do nome deve ser de 10 caracteres.']
+        // validate: [validator.isAlpha, 'O nome não pode conter números.']
     },
     slug: {
         type: String
@@ -21,11 +25,17 @@ const toursSchema = new mongoose.Schema({
     },
     difficulty:{
         type: String,
-        required: [true, "A tour must have a difficulty."]
+        required: [true, "A tour must have a difficulty."],
+        enum: {
+            values: ['easy', 'medium', 'difficult'],
+            message: `{VALUE} não é aceito. Deve ser: easy, medium, difficult`
+        }
     },
     ratingsAverage: {
         type: Number,
-        default: 0
+        default: 0,
+        min: [1, 'A menor avaliação aceitável é 1.'],
+        max: [5, 'A maior validação aceitável é 5.']
     },
     ratingsQuantity: {
         type: Number,
@@ -35,8 +45,18 @@ const toursSchema = new mongoose.Schema({
         type: Number,
         required: [true, "A tour must have a price."]
     },
-    discount: {
+    priceDiscount: {
         type: Number,
+        validate: {
+            validator: function(value){
+                //Verifica de o desconto é maior que o preço do tour.
+                //This aponta para o documento na CRIAÇÃO de um novo documento.
+                //No update this aponta para a query, a validação não funciona com o update.
+                console.log(this, this.price);
+                return value < this.price;
+            },
+            message: 'O preço do desconto ({VALUE}) não deve ser maior que o preço do tour.'
+        },
         default: 0
     },
     summary: {

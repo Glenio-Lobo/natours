@@ -73,7 +73,7 @@ export async function createNewTour(request, response){
     }catch(err){
         response.status(400).json({
             status: 'fail',
-            message: "Validation error."
+            message: err
         });
     }
 }
