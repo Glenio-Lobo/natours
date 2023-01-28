@@ -8,6 +8,7 @@
     "start": "nodemon server.js",
     "dev-import": "node dev-data/data/import-dev-data.js --import",
     "dev-delete": "node dev-data/data/import-dev-data.js --delete",
+    "debug": "ndb server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "globo",
