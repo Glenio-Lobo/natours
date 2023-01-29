@@ -1,8 +1,11 @@
 import { app }  from './app.js';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-const PORT = 8000;
-const URL = "mongodb+srv://admin:VrwzMsnU2S2Vn0dp@cluster0.bmulhpo.mongodb.net/natours?retryWrites=true&w=majority";
+dotenv.config({path: './config.env'});
+
+const PORT = process.env.PORT || 8000;
+const URL = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 mongoose.connect(URL).then(connection => {
     console.log('DB connected...');

@@ -50,7 +50,6 @@ export async function getTour(request, response){
 
     try{
         const tour = await Tour.findById(request.params.id);
-        console.log(request.params.id, tour);
         response.status(200).json({ 
             status: 'sucess', 
             data: { tour: tour }
