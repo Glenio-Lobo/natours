@@ -122,7 +122,7 @@ toursSchema.pre('aggregate', function(next){
     //Adiciona um novo estágio match no inicio do array
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 
-    console.log(this.pipeline());
+    // console.log(this.pipeline());
     next();
 });
 
