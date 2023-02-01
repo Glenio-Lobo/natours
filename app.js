@@ -20,7 +20,6 @@ app.use('/api/v1/users', usersRouter);
 
 //3) Handler genérico para rotas não programadas.
 app.all('*', function(request, response, next) {
-    
     // A reposta sempre será tratada como um erro quando next recebe um argumento, sendo o argument o erro.
     next(new AppError(`Não foi possível encontrar ${request.originalUrl}`, 404));
 

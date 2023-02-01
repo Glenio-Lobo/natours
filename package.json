@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon sever.js",
+    "start:prod": "NODE_ENV=production nodemon server.js",
     "dev-import": "node dev-data/data/import-dev-data.js --import",
     "dev-delete": "node dev-data/data/import-dev-data.js --delete",
     "debug": "ndb server.js",

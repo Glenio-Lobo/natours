@@ -17,7 +17,8 @@ const toursSchema = new mongoose.Schema({
     },
     duration: {
         type: Number,
-        required: [true, "A tour must have a duration."]
+        required: [true, "A tour must have a duration."],
+        min: [0, "Duration cannot be negative."]
     },
     maxGroupSize: {
         type: Number,
@@ -28,7 +29,7 @@ const toursSchema = new mongoose.Schema({
         required: [true, "A tour must have a difficulty."],
         enum: {
             values: ['easy', 'medium', 'difficult'],
-            message: `{VALUE} não é aceito. Deve ser: easy, medium, difficult`
+            message: `O valor {VALUE} não é aceito. Deve ser: easy, medium, difficult`
         }
     },
     ratingsAverage: {
@@ -52,7 +53,7 @@ const toursSchema = new mongoose.Schema({
                 //Verifica de o desconto é maior que o preço do tour.
                 //This aponta para o documento na CRIAÇÃO de um novo documento.
                 //No update this aponta para a query, a validação não funciona com o update.
-                console.log(this, this.price);
+                // console.log(this, this.price);
                 return value < this.price;
             },
             message: 'O preço do desconto ({VALUE}) não deve ser maior que o preço do tour.'
