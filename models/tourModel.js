@@ -8,8 +8,8 @@ const toursSchema = new mongoose.Schema({
         required: [true, 'Must have a name...'],
         unique: true,
         trim: true,
-        maxLength: [40, 'O tamanho máximo do nome deve ser de 40 caracteres.'],
-        minLength: [10, 'O tamanho mínimo do nome deve ser de 10 caracteres.']
+        maxlength: [40, 'O tamanho máximo do nome deve ser de 40 caracteres.'],
+        minlength: [10, 'O tamanho mínimo do nome deve ser de 10 caracteres.']
         // validate: [validator.isAlpha, 'O nome não pode conter números.']
     },
     slug: {
