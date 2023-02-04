@@ -4,9 +4,8 @@ import * as authController from '../controller/authController.js';
 
 const router = express.Router();
 
-router
-   .route('/signup')
-   .post(authController.createUser);
+router.post('/signup', authController.createUser);
+router.post('/login', authController.login);
 
 router
    .route('/')
