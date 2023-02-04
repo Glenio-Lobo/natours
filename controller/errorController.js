@@ -8,11 +8,19 @@ function handleDuplicateFieldsErrorDB(error){
     return new AppError(`${error.keyValue.name} já existe. Por favor, insira outro valor!`, 400);
 }
 
-function handlerValidationError(error){
+function handleValidationError(error){
     let errorMessage = '';
     for(let err in error.errors) errorMessage = errorMessage.concat(`Error in ${err} value: ${error.errors[err].message}. `);
     
     return new AppError(errorMessage, 400);
+}
+
+function handleJWTError(error){
+    return new AppError(`${error.name}: ${error.message}. Please log in again.`, 401);
+}
+
+function handleJWTExpirationError(error){
+    return new AppError(`${error.name}: ${error.message}. Please log in again.`, 401);
 }
 
 function sendErrorDev(err, response){
@@ -58,8 +66,10 @@ export default function(err, request, response, next) {
 
         if(err.name === 'CastError') error = handleCastErrorDB(err);
         else if(err.code === 11000) error = handleDuplicateFieldsErrorDB(err);
-        else if(err.name === 'ValidationError') error = handlerValidationError(err);
-
+        else if(err.name === 'ValidationError') error = handleValidationError(err);
+        else if(err.name === 'JsonWebTokenError') error = handleJWTError(err);
+        else if(err.name === 'TokenExpiredError') error = handleJWTExpirationError(err);
+        
         sendErrorProd(error, response);
     }
 }
