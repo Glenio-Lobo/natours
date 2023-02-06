@@ -37,10 +37,10 @@ const userSchema = new mongoose.Schema({
             validator: function (value){
                 return value === this.password;
             },
-            message: 'Password is not identical.'
+            message: 'Password and Password Confirmed are Different. Please insert the same password.'
         }
     },
-    passwordChanged: Date,
+    passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: String
 });
@@ -55,6 +55,16 @@ userSchema.pre('save', async function(next){
 
     // Remove a senha de confirmação
     this.passwordConfirmed = undefined;
+
+    next();
+});
+
+userSchema.pre('save', function(next){
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000;
+
+    next();
 });
 
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
@@ -62,8 +72,8 @@ userSchema.methods.correctPassword = async function(candidatePassword, userPassw
 }
 
 userSchema.methods.changedPasswordAfter = function(JWTTimeStamp){
-    if(this.passwordChanged){
-        const changeTimeStamp = Number.parseInt(this.passwordChanged.getTime() / 1000, 10);
+    if(this.passwordChangedAt){
+        const changeTimeStamp = Number.parseInt(this.passwordChangedAt.getTime() / 1000, 10);
         if(changeTimeStamp > JWTTimeStamp) return true;
     }
 

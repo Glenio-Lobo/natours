@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { promisify } from 'util';
 import sendEmail from "../utils/email.js";
+import crypto from 'crypto';
 
 function generateSignToken(id){
     return jwt.sign(
@@ -57,6 +58,7 @@ export const login = catchAsync(async function(request, response, next){
         });
 });
 
+// O usuário só terá acesso a certas rotas se estiver logado, essa função garante isso!
 export const protectAccess = catchAsync(async function(request, response, next){
     // 1) Obtenha o token JWT e verifica se ele existe
     let token;
@@ -128,13 +130,51 @@ export const forgotPassword =  catchAsync(async function(request, response, next
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save( { validateBeforeSave: false } );
-        console.log(err);
 
         return next(new AppError('Error enviando  o email para a redefinição da senha. Tente novamente mais tarde.', 500));
     }
 
 });
 
-export const resetPassword = async function(request, response, next){
+export const resetPassword = catchAsync(async function(request, response, next){
+    // 1) Encontre o usuário baseado no token
+    // $2a$12$LEVXHfhMIV3aoQq/mP/UB.TUfhclTOIL/yzoZIWv79wUmUJO9nxKC
+    const { password, passwordConfirmed } = request.body;
+    const tokenHashed = crypto
+                    .createHash('sha256')
+                    .update(request.params.token)
+                    .digest('hex');;
 
-}
+    if(!tokenHashed) return next(new AppError('Insira um token válido.', 401));
+    if(!password || !passwordConfirmed) return next(new AppError('Insira a password e a passwordConfirmed.', 401));
+
+    const user = await User.findOne(
+        { 
+            passwordResetToken: tokenHashed,
+            passwordResetExpires: { $gt: Date.now() } 
+        }
+    );
+
+    // 2) Se o token não expirou e o usuário existe, troque a senha
+    if(!user) return next(new AppError('Token expirou ou não corresponde a nenhum usuário.', 401));
+
+
+    user.password = password;
+    user.passwordConfirmed = passwordConfirmed;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined;
+
+    // 3) Update changedPasswordAt
+    //Feito no middleware antes de salvar
+
+    // Salvando as alterações do usuário
+    await user.save();
+
+    // 4) Login automático do usuário
+    const token = generateSignToken(user._id);
+    response.status(200)
+        .json({
+            status: 'success',
+            token
+    });
+});
