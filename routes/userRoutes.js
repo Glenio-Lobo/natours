@@ -9,6 +9,7 @@ router.post('/login', authController.login);
 
 // Recebe apenas o email.
 router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:resetToken', authController.resetPassword);
 
 router
    .route('/')
