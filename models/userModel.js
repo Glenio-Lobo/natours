@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -15,6 +16,11 @@ const userSchema = new mongoose.Schema({
         validate: [validator.isEmail, 'The email {VALUE} is invalid. Please insert a valid email.']
     },
     photo: String,
+    role: {
+        type: String,
+        enum: ['user', 'guide', 'lead-guide', 'admin'],
+        default: 'user'
+    },
     password: {
         type: String,
         required: [true, 'User must have a password...'],
@@ -34,7 +40,9 @@ const userSchema = new mongoose.Schema({
             message: 'Password is not identical.'
         }
     },
-    passwordChanged: Date
+    passwordChanged: Date,
+    passwordResetToken: String,
+    passwordResetExpires: String
 });
 
 userSchema.pre('save', async function(next){
@@ -61,6 +69,20 @@ userSchema.methods.changedPasswordAfter = function(JWTTimeStamp){
 
     // False significa que a senha não mudou.
     return false;
+}
+
+userSchema.methods.generatePasswordResetToken = function(){
+    // Gerando reset password com 32 bytes randômicos convertidos para uma string hexadecimal
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    // Criptografa  o token gerado
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    // Data de expiração setada para 10 minutos após a criação do token
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    //Retorna o token de reset
+    return resetToken;
 }
 
 const User = mongoose.model('User', userSchema);

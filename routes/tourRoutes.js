@@ -1,6 +1,6 @@
 import express from 'express';
 import * as tourController from '../controller/tourController.js';
-import { protectAccess } from '../controller/authController.js';
+import * as authController from '../controller/authController.js';
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 
 router  
    .route('/')
-   .get(protectAccess, tourController.getAllTours)
+   .get(authController.protectAccess, tourController.getAllTours)
    .post(tourController.createNewTour);
 
 router 
@@ -27,6 +27,10 @@ router
     .route('/:id')
    .get(tourController.getTour)
    .patch(tourController.updateTour)
-   .delete(tourController.deleteTour);
+   .delete(
+      authController.protectAccess, 
+      authController.restrictTo('admin', 'lead-guide'), 
+      tourController.deleteTour
+   );
 
 export { router };

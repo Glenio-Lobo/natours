@@ -106,19 +106,19 @@ toursSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
 });
 
-//Document Middleware
+//Document Middleware -> This aponta para o documento.
 toursSchema.pre('save', function(next){
     this.slug = slugify(this.name, {lower: true});
     next();
 });
 
-//Query Middleware
+//Query Middleware -> This aponta para query.
 toursSchema.pre(/^find/, function(next){
     this.find({secretTour: {$ne: true}});
     next();
 });
 
-//Agreggation Middleware
+//Agreggation Middleware -> This aponta para a agregação.
 toursSchema.pre('aggregate', function(next){
     //Adiciona um novo estágio match no inicio do array
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });

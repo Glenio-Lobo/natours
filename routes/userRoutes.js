@@ -7,6 +7,9 @@ const router = express.Router();
 router.post('/signup', authController.createUser);
 router.post('/login', authController.login);
 
+// Recebe apenas o email.
+router.post('/forgotPassword', authController.forgotPassword);
+
 router
    .route('/')
    .get(userController.getAllUsers)

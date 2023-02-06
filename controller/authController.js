@@ -22,7 +22,8 @@ export const createUser = catchAsync(async function(request, response, next){
         email: request.body.email,
         password: request.body.password,
         passwordConfirmed: request.body.passwordConfirmed,
-        passwordChanged: request.body.passwordChanged
+        passwordChanged: request.body.passwordChanged,
+        role: request.body.role
     });
 
     const tokenJWT = generateSignToken(newUser._id); 
@@ -80,4 +81,34 @@ export const protectAccess = catchAsync(async function(request, response, next){
     // 5) Permite a passagem se chegar nesse ponto
     request.user = user;
     next();
+});
+
+export const restrictTo = function(...roles){
+    return (request, response, next) => {
+
+        // Verifica se a role do uusário está dentro das permissões, se não está, não da permissão!
+        if(!roles.includes(request.user.role)){
+            return next(new AppError('Você não tem permissão para realizar essa tarefa', 403));
+        }
+
+        next();
+    }
+}
+
+export const forgotPassword =  catchAsync(async function(request, response, next){
+    // 1) Encontre o usuário baseado no email
+    const user = await User.findOne({ email: request.body.email });
+
+    if(!user) return next(new AppError('O Email inserido não corresponde a nenhum usuário.', 401));
+
+    // 2) Gere um token de reset aleatório
+    const resetToken = user.generatePasswordResetToken();
+    await user.save( { validateBeforeSave: false } );
+
+    // 3) Envie o token através do email
+
+    response.status(200).json({
+        resetToken,
+        user
+    });
 });
