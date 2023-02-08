@@ -42,7 +42,12 @@ const userSchema = new mongoose.Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: String
+    passwordResetExpires: String,
+    active: {
+        type: Boolean,
+        select: false,
+        default: true
+    }
 });
 
 userSchema.pre('save', async function(next){
@@ -64,6 +69,12 @@ userSchema.pre('save', function(next){
 
     this.passwordChangedAt = Date.now() - 1000;
 
+    next();
+});
+
+userSchema.pre(/^find/, function(next){
+    // Garante que apenas o documentos ativos serão encontrados
+    this.find( { active: {$ne: false } } );
     next();
 });
 

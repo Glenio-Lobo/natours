@@ -12,7 +12,7 @@ function filterObj(obj, ...allowedFields){
     return newObj;
 }
 
-export async function updateMe(request, response, next){
+export const updateMe = catchAsync(async function(request, response, next){
     // 1) Crie error se o usuário tentar mudar a senha
     if(request.body.password ||  request.body.passwordConfirmed) 
         return next(new AppError('Não é possível atualizar a senha por essa página. Tente /updateMyPassword', 400));
@@ -20,7 +20,7 @@ export async function updateMe(request, response, next){
     // 2) Atualize o document do usuário
     const filteredBody = filterObj(request.body, "name", "email");
 
-    // Usa o findIdAndUpdate para não rodar o Document Middleware de Save
+    // Usa o findIdAndUpdate para não rodar o Document Middleware de Save e não rodar o validate
     const updatedUser = await User.findByIdAndUpdate(request.user.id, filteredBody, 
         { 
             new: true, 
@@ -35,7 +35,17 @@ export async function updateMe(request, response, next){
                 user: updatedUser
             }
         })
-}
+});
+
+export const deleteMe = catchAsync( async function(request, response, next){
+    await User.findByIdAndUpdate(request.user.id, { active: false });
+
+    response.status(200)
+        .json({
+            status: "sucess",
+            data: null
+        })
+});
 
 export function getAllUsers(request, response) {
     response.status(400).json({

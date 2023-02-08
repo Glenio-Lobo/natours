@@ -47,7 +47,7 @@ export const login = catchAsync(async function(request, response, next){
     const userResult = await User.findOne( { email: email }).select('+password');
 
     if(!userResult || ! (await userResult.correctPassword(password, userResult.password)) ) 
-        return next(new AppError('Email ou Senha Incorretas!', 401));
+        return next(new AppError('Email ou Senha Incorretas, ou usuário não existe.', 401));
 
     // 3) Se tudo ta ok, envia o JWT token para o cliente
     const token = generateSignToken(userResult._id);
