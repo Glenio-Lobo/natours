@@ -178,3 +178,30 @@ export const resetPassword = catchAsync(async function(request, response, next){
             token
     });
 });
+
+/*
+ * Função responsável por atualizar a senha do usuário que está logado.
+ * Deve receber a senha atual do usuário para logar, e o usuário deve estar logado no sistema.
+ * */
+export const updatePassword = catchAsync(async function(request, response ,next){
+    // 1) Obtenha o usuário 
+    const user = await User.findById({ _id: request.user._id}).select('+password');
+    if(!user) return next(new AppError('Por favor, log in no sistema para ter acesso a essa funcionalidade.', 401));
+
+    // 2) Verifique se a senha passada é correta
+    if(!user.correctPassword(request.body.passwordCurrent, user.password)) 
+        return next(new AppError('A senha atual informada é incorreta!', 401));
+
+    // 3) Se sim, atualize a senha
+    user.password = request.body.password;
+    user.passwordConfirmed = request.body.passwordConfirmed;
+    await user.save();
+
+    // 4) Login the user e envie o JWT token
+    const token = generateSignToken(user._id);
+    response.status(200)
+        .json({
+            status: 'success',
+            token
+    });
+});
