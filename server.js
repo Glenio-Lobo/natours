@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 process.on('uncaughtException', err => {
     console.log('!!!!!!!!!!!!!!! UNCAUGHT EXCEPTION !!!!!!!!!!!!!!!\n');
+    console.log(err);
     process.exit(1);
 })
 
