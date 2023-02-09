@@ -15,6 +15,26 @@ function generateSignToken(id){
     );
 }
 
+function createSendToken(user, statusCode, response){
+    const tokenJWT = generateSignToken(user._id); 
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRESIN * 24 * 60 * 60 * 1000),
+        secure: false, // Cookie só sera enviado em conexões HTTPS
+        httpOnly: true // Barra o browser de ser capaz de modificar o cookie, apenas http terão permissão
+    };
+    
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    response.cookie('jwt', tokenJWT, cookieOptions);
+    
+    user.password = undefined;
+    response.status(statusCode).json({
+        status: 'sucess',
+        token: tokenJWT,
+        user: user
+    })
+}
+
 export const createUser = catchAsync(async function(request, response, next){
     // Errado, não crie um usuário usando todos os dados que vem do body.
     // const newUser = await User.create(request.body);
@@ -28,13 +48,7 @@ export const createUser = catchAsync(async function(request, response, next){
         role: request.body.role
     });
 
-    const tokenJWT = generateSignToken(newUser._id); 
-
-    response.status(201).json({
-        status: 'sucess',
-        token: tokenJWT,
-        user: newUser
-    })
+    createSendToken(newUser, 201, response);
 });
 
 export const login = catchAsync(async function(request, response, next){
@@ -50,12 +64,7 @@ export const login = catchAsync(async function(request, response, next){
         return next(new AppError('Email ou Senha Incorretas, ou usuário não existe.', 401));
 
     // 3) Se tudo ta ok, envia o JWT token para o cliente
-    const token = generateSignToken(userResult._id);
-    response.status(200)
-        .json({
-            status: 'success',
-            token
-        });
+    createSendToken(userResult, 200, response);
 });
 
 // O usuário só terá acesso a certas rotas se estiver logado, essa função garante isso!
@@ -171,12 +180,7 @@ export const resetPassword = catchAsync(async function(request, response, next){
     await user.save();
 
     // 4) Login automático do usuário
-    const token = generateSignToken(user._id);
-    response.status(200)
-        .json({
-            status: 'success',
-            token
-    });
+    createSendToken(user, 200, response);
 });
 
 /*
@@ -198,10 +202,5 @@ export const updatePassword = catchAsync(async function(request, response ,next)
     await user.save();
 
     // 4) Login the user e envie o JWT token
-    const token = generateSignToken(user._id);
-    response.status(200)
-        .json({
-            status: 'success',
-            token
-    });
+    createSendToken(user, 200, response);
 });
