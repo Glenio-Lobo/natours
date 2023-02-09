@@ -4,15 +4,52 @@ import {router as toursRouter} from './routes/tourRoutes.js';
 import {router as usersRouter} from './routes/userRoutes.js';
 import { AppError } from './utils/appError.js';
 import globalErrorHandler from './controller/errorController.js';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
 
 const app = express();
 
 // 1) Middleware Globais
-app.use(express.json());
+app.use(express.json( { 
+    limit: '10kb'
+}));
+
+// Set Security HTTP Headers
+app.use(helmet());
 
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 
 }
+
+const limiter = rateLimit({
+    // Limitando 100 request por hora
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: 'Too many requests from this IP. Please try again in one hour.'
+});
+ 
+app.use('/api', limiter);
+
+// Data Sanitization para NoSql query injections
+app.use(mongoSanitize());
+  
+// Data Sanitization para XSS
+app.use(xss());
+
+// Prevent Parameter Polution
+app.use(hpp({
+    whitelist: [ 
+        'duration', 
+        'ratingsQuantity', 
+        'ratingsAverage', 
+        'maxGroupSize', 
+        'difficulty', 
+        'price'
+    ]
+}));
 
 //2) Middleware Específicos
 app.use('/api/v1/tours', toursRouter);
