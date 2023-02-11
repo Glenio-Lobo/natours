@@ -5,7 +5,7 @@ import { Tour } from './../../models/tourModel.js';
 import { User } from '../../models/userModel.js';
 
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
-const toursData  = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
+const toursData  = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours.json`));
 const usersData = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/users.json`));
 
 const PORT = 8000;

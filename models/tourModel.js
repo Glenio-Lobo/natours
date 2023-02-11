@@ -87,7 +87,30 @@ const toursSchema = new mongoose.Schema({
     secretTour: {
         type: Boolean,
         default: false
-    }
+    },
+    startLocation: {
+        type: {
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: [Number], //[Longitude 1, latitude 2]
+        adress: String,
+        description: String
+    },
+    locations: [
+        {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number], //[Longitude 1, latitude 2]
+            adress: String,
+            description: String,
+            day: Number // Dia em que o local será visitado no tour.
+        }
+    ]
 },  
 // {
 //     virtuals: {
@@ -99,7 +122,8 @@ const toursSchema = new mongoose.Schema({
 //     }
 // },
 {
-    toJSON: { virtuals: true }
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 }); 
 
 toursSchema.virtual('durationWeeks').get(function(){
