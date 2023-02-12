@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 import validator from 'validator';
+// import { User } from './userModel.js';
 
 const toursSchema = new mongoose.Schema({
     name: {
@@ -110,6 +111,12 @@ const toursSchema = new mongoose.Schema({
             description: String,
             day: Number // Dia em que o local será visitado no tour.
         }
+    ],
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
     ]
 },  
 // {
@@ -130,11 +137,27 @@ toursSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
 });
 
-//Document Middleware -> This aponta para o documento.
+//Document Middleware -> This aponta para o documento. Só roda no .save() .create()
 toursSchema.pre('save', function(next){
     this.slug = slugify(this.name, {lower: true});
     next();
 });
+
+// Embedding Users no Tours
+// toursSchema.pre('save', async function(next){
+//     // Novos tours vão receber um array de guias
+//     // 1) Loop sobre o array guide e gera um array com as promises das buscas
+//     const userGuidesPromises = this.guides.map(async id => {
+//         return await User.findById(id);
+//     })
+
+//     // 2) Executa todas as promisses ao mesmo tempo e substitui o valor de guides pelo documentos dos usuários buscados
+//     this.guides = await Promise.all(userGuidesPromises);
+
+//     next();
+// });
+
+
 
 //Query Middleware -> This aponta para query.
 toursSchema.pre(/^find/, function(next){
