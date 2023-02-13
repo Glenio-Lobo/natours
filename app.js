@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from "morgan";
 import {router as toursRouter} from './routes/tourRoutes.js';
 import {router as usersRouter} from './routes/userRoutes.js';
+import { router as reviewRouter } from './routes/reviewRoutes.js';
 import { AppError } from './utils/appError.js';
 import globalErrorHandler from './controller/errorController.js';
 import rateLimit from 'express-rate-limit';
@@ -54,6 +55,7 @@ app.use(hpp({
 //2) Middleware Específicos
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 //3) Handler genérico para rotas não programadas.
 app.all('*', function(request, response, next) {
