@@ -161,7 +161,12 @@ toursSchema.pre('save', function(next){
 
 //Query Middleware -> This aponta para query.
 toursSchema.pre(/^find/, function(next){
-    this.find({secretTour: {$ne: true}});
+    this.find({secretTour: {$ne: true}}) // Filtra todos os tours marcados como secret
+        .populate({ // Populate o campo de referencia guides
+            path: 'guides',
+            select: '-__v -passwordChangedAt'
+        });
+
     next();
 });
 
