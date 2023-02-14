@@ -72,6 +72,7 @@ export const protectAccess = catchAsync(async function(request, response, next){
     // 1) Obtenha o token JWT e verifica se ele existe
     let token;
 
+    // Autorização deve ser feita contendo um header "Bearer JWT TOKEN", se não for, então rejeita, usuário não está logado.
     if(request.headers.authorization && request.headers.authorization.startsWith('Bearer')) 
         token = request.headers.authorization.split(' ')[1];
     

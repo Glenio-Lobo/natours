@@ -32,6 +32,21 @@ const reviewSchema = mongoose.Schema({
     toObject: { virtuals: true }
 })
 
+// Preenchendo User e Tour
+reviewSchema.pre(/^find/, function(next){
+    console.log('Teste, entrei.');
+
+    this.populate({
+        path: 'user',
+        select: 'name photo'
+    }).populate({
+        path: 'tour',
+        select: 'name'
+    });
+
+    next();
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 export { Review };
