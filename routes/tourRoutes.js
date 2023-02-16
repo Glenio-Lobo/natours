@@ -1,6 +1,7 @@
 import express from 'express';
 import * as tourController from '../controller/tourController.js';
 import * as authController from '../controller/authController.js';
+import * as reviewController from '../controller/reviewController.js';
 
 const router = express.Router();
 
@@ -32,5 +33,13 @@ router
       authController.restrictTo('admin', 'lead-guide'), 
       tourController.deleteTour
    );
+
+router
+      .route('/:tourId/reviews')
+      .post(
+         authController.protectAccess, 
+         authController.restrictTo('user'),
+         reviewController.createReview
+      )
 
 export { router };

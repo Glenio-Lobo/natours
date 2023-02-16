@@ -22,6 +22,11 @@ export const getAllReviews = catchAsync(async function(request, response, next){
 });
 
 export const createReview = catchAsync(async function(request, response, next){
+    // Permite Rotas Aninhadas
+    if(!request.body.tour) request.body.tour = request.params.tourId;
+    // Obtido no Protect Acess, que obriga o usuário a logar e salva o usuário da seção atual.
+    if(!request.body.user) request.body.user = request.user.id; 
+
     const review = await Review.create(request.body);
 
     response.status(201).json({
