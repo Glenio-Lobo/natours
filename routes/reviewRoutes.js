@@ -7,6 +7,7 @@ const router = express.Router( { mergeParams: true });
 
 router
     .route('/')
+    // Get pode vir de /api/v1/reviews ou /api/v1/tours/tourId/reviews
     .get(reviewController.getAllReviews)
     .post(authController.protectAccess, authController.restrictTo('user'), reviewController.createReview);
 

@@ -5,7 +5,12 @@ import { AppError } from '../utils/appError.js';
 
 
 export const getAllReviews = catchAsync(async function(request, response, next){
-    const features = new APIFeatures(Review.find(), request.query)
+    let filter = {};
+
+    // Se vinher da rota /api/v1/tours/tourId/reviews, retorna todos os revies relacionados com o tourId.
+    if(request.params.tourId) filter = { tour: request.params.tourId};
+
+    const features = new APIFeatures(Review.find(filter), request.query)
         .filter()
         .sort()
         .limitFields()
