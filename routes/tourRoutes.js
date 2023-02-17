@@ -1,11 +1,16 @@
 import express from 'express';
 import * as tourController from '../controller/tourController.js';
 import * as authController from '../controller/authController.js';
-import * as reviewController from '../controller/reviewController.js';
+import { router as reviewRouter } from './reviewRoutes.js';
+// import * as reviewController from '../controller/reviewController.js';
 
 const router = express.Router();
 
 // router.param('id', tourController.checkId);
+
+// Chega aqui através do /api/v1/tours, ao ter como url /:tourId/reviews vai para reviewRouter que irá acessar a route '/'
+// api/v1/tours no app.js ---> api/v1/tours/:tourId/reviews no tourRoutes ----> api/v1/tours/:tourId/reviews/ no reviewRoutes
+router.use('/:tourId/reviews', reviewRouter);
 
 router  
    .route('/')
@@ -34,12 +39,12 @@ router
       tourController.deleteTour
    );
 
-router
-      .route('/:tourId/reviews')
-      .post(
-         authController.protectAccess, 
-         authController.restrictTo('user'),
-         reviewController.createReview
-      )
+// router
+//       .route('/:tourId/reviews')
+//       .post(
+//          authController.protectAccess, 
+//          authController.restrictTo('user'),
+//          reviewController.createReview
+//       )
 
 export { router };
