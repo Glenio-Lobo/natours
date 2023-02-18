@@ -2,7 +2,7 @@ import { Review } from "../models/reviewModel.js";
 import { APIFeatures } from '../utils/apiFeatures.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/appError.js';
-
+import * as Factory from './handlerFactory.js';
 
 export const getAllReviews = catchAsync(async function(request, response, next){
     let filter = {};
@@ -50,3 +50,5 @@ export const getReview = catchAsync(async function(request, response, next){
         data: { review }
     });
 });
+
+export const deleteReview = Factory.deleteOneDocument(Review);

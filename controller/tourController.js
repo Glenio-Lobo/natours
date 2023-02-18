@@ -4,6 +4,7 @@ import { Tour } from './../models/tourModel.js';
 import { APIFeatures } from '../utils/apiFeatures.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/appError.js';
+import * as Factory from './handlerFactory.js';
 
 // const __dirname = fileURLToPath(new URL('..', import.meta.url));
 // const toursData  = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
@@ -79,18 +80,21 @@ export const updateTour = catchAsync( async function (request, response, next){
     });
 });
 
-export const deleteTour = catchAsync( async function(request, response, next){
-    const tour = await Tour.findByIdAndDelete(request.params.id, request.body);
 
-    if(!tour) return next(new AppError('Tour não encontrado', 404));
+export const deleteTour = Factory.deleteOneDocument(Tour);
 
-    response.status(204).json({
-        message: 'sucess',
-        data: {
-            tour: tour
-        }
-    });
-});
+// export const deleteTour = catchAsync( async function(request, response, next){
+//     const tour = await Tour.findByIdAndDelete(request.params.id, request.body);
+
+//     if(!tour) return next(new AppError('Tour não encontrado', 404));
+
+//     response.status(204).json({
+//         message: 'sucess',
+//         data: {
+//             tour: tour
+//         }
+//     });
+// });
 
 export const getToursStats = catchAsync(async function(request, response, next){
     const stats = await Tour.aggregate([

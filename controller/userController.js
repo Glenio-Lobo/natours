@@ -1,6 +1,7 @@
 import { AppError } from "../utils/appError.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { User } from "../models/userModel.js";
+import * as Factory from './handlerFactory.js';
 
 function filterObj(obj, ...allowedFields){
     const newObj = {};
@@ -37,6 +38,7 @@ export const updateMe = catchAsync(async function(request, response, next){
         })
 });
 
+// Deleta o usuário logado atualmente pelo pedido do próprio usuário.
 export const deleteMe = catchAsync( async function(request, response, next){
     await User.findByIdAndUpdate(request.user.id, { active: false });
 
@@ -75,9 +77,5 @@ export function updateUser(request, response) {
     })
 }
 
-export function deleteUser(request, response) {
-    response.status(400).json({
-        status: 'fail',
-        message: 'Não implementado.'
-    })
-}
+// Só o administrador poderá deletar um documento.
+export const deleteUser = Factory.deleteOneDocument(User);
