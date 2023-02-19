@@ -7,15 +7,17 @@ import { router as reviewRouter } from './reviewRoutes.js';
 const router = express.Router();
 
 // router.param('id', tourController.checkId);
-
 // Chega aqui através do /api/v1/tours, ao ter como url /:tourId/reviews vai para reviewRouter que irá acessar a route '/'
 // api/v1/tours no app.js ---> api/v1/tours/:tourId/reviews no tourRoutes ----> api/v1/tours/:tourId/reviews/ no reviewRoutes
 router.use('/:tourId/reviews', reviewRouter);
 
 router  
    .route('/')
-   .get(authController.protectAccess, tourController.getAllTours)
-   .post(tourController.createNewTour);
+   .get(tourController.getAllTours)
+   .post(authController.protectAccess, 
+         authController.restrictTo('admin', 'lead-guide'),
+         tourController.createNewTour
+         );
 
 router 
    .route('/top-5-tours')
@@ -27,12 +29,19 @@ router
 
 router 
    .route('/monthly-plan/:year')
-   .get(tourController.getMonthlyPlan);
+   .get(
+      authController.protectAccess,
+      authController.restrictTo('admin', 'lead-guide', 'guide'),
+      tourController.getMonthlyPlan
+      );
 
 router   
     .route('/:id')
    .get(tourController.getTour)
-   .patch(tourController.updateTour)
+   .patch(
+      authController.protectAccess,
+      authController.restrictTo('admin', 'lead-guide'),
+      tourController.updateTour)
    .delete(
       authController.protectAccess, 
       authController.restrictTo('admin', 'lead-guide'), 

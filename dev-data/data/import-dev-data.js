@@ -3,9 +3,11 @@ import fs from 'fs';
 import mongoose from 'mongoose';
 import { Tour } from './../../models/tourModel.js';
 import { User } from '../../models/userModel.js';
+import { Review } from '../../models/reviewModel.js';
 
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
 const toursData  = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours.json`));
+const reviewsData = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/reviews.json`));
 const usersData = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/users.json`));
 
 const PORT = 8000;
@@ -21,7 +23,8 @@ mongoose.connect(URL_DB).then(connection => {
 async function importData(){
     try{
         await Tour.create(toursData);
-        // await User.create(usersData);
+        await User.create(usersData, { validateBeforeSave: false });
+        await Review.create(reviewsData);
         console.log('Data importada para a database.');
         process.exit();
     }catch(err){
@@ -33,6 +36,7 @@ async function deleteData(){
     try{
         await Tour.deleteMany();
         await User.deleteMany();
+        await Review.deleteMany();
         console.log('All Data Deleted from Database.');
         process.exit();
     }catch(err){

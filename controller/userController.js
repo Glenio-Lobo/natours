@@ -49,6 +49,11 @@ export const deleteMe = catchAsync( async function(request, response, next){
         })
 });
 
+export const getMe = function(request, response, next){
+    request.params.id = request.user.id;
+    next();
+}
+
 export const getAllUsers = Factory.getAllDocuments(User);
 export const getUser = Factory.updateDocument(User);
 export const updateUser = Factory.updateDocument(User);
