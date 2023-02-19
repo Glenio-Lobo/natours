@@ -56,13 +56,6 @@ export function getAllUsers(request, response) {
     })
 }
 
-export function createNewUser(request, response) {
-    response.status(400).json({
-        status: 'fail',
-        message: 'Não implementado.'
-    })
-}
-
 export function getUserByUrlId(request, response) {
     response.status(400).json({
         status: 'fail',
@@ -70,12 +63,6 @@ export function getUserByUrlId(request, response) {
     })
 }
 
-export function updateUser(request, response) {
-    response.status(400).json({
-        status: 'fail',
-        message: 'Não implementado.'
-    })
-}
-
+export const updateUser = Factory.updateDocument(User);
 // Só o administrador poderá deletar um documento.
 export const deleteUser = Factory.deleteOneDocument(User);

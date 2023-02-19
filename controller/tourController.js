@@ -54,34 +54,35 @@ export const getTour = catchAsync( async function (request, response, next){
     });
 });
 
-export const createNewTour = catchAsync(async function(request, response, next){
-    const newTour = await Tour.create(request.body);
-    response.status(201).json({
-        status: 'sucess',
-        tour: newTour
-    });
-});
-
-export const updateTour = catchAsync( async function (request, response, next){
-    const updateOptions = {
-        new: true,
-        runValidators: true
-    };
-
-    const tour = await Tour.findByIdAndUpdate(request.params.id, request.body, updateOptions);
-
-    if(!tour) return next(new AppError('Tour não encontrado', 404));
-
-    response.status(201).json({
-        message: 'sucess',
-        data: {
-            tour: tour
-        }
-    });
-});
-
-
+export const createNewTour = Factory.createNewDocument(Tour);
+export const updateTour = Factory.updateDocument(Tour);
 export const deleteTour = Factory.deleteOneDocument(Tour);
+
+// export const createNewTour = catchAsync(async function(request, response, next){
+//     const newTour = await Tour.create(request.body);
+//     response.status(201).json({
+//         status: 'sucess',
+//         tour: newTour
+//     });
+// });
+
+// export const updateTour = catchAsync( async function (request, response, next){
+//     const updateOptions = {
+//         new: true,
+//         runValidators: true
+//     };
+
+//     const tour = await Tour.findByIdAndUpdate(request.params.id, request.body, updateOptions);
+
+//     if(!tour) return next(new AppError('Tour não encontrado', 404));
+
+//     response.status(201).json({
+//         message: 'sucess',
+//         data: {
+//             tour: tour
+//         }
+//     });
+// });
 
 // export const deleteTour = catchAsync( async function(request, response, next){
 //     const tour = await Tour.findByIdAndDelete(request.params.id, request.body);
