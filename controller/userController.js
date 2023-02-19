@@ -49,20 +49,8 @@ export const deleteMe = catchAsync( async function(request, response, next){
         })
 });
 
-export function getAllUsers(request, response) {
-    response.status(400).json({
-        status: 'fail',
-        message: 'Não implementado.'
-    })
-}
-
-export function getUserByUrlId(request, response) {
-    response.status(400).json({
-        status: 'fail',
-        message: 'Não implementado.'
-    })
-}
-
+export const getAllUsers = Factory.getAllDocuments(User);
+export const getUser = Factory.updateDocument(User);
 export const updateUser = Factory.updateDocument(User);
 // Só o administrador poderá deletar um documento.
 export const deleteUser = Factory.deleteOneDocument(User);

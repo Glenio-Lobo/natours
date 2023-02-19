@@ -1,7 +1,6 @@
 // import { fileURLToPath } from 'url';
 // import fs from 'fs';
 import { Tour } from './../models/tourModel.js';
-import { APIFeatures } from '../utils/apiFeatures.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/appError.js';
 import * as Factory from './handlerFactory.js';
@@ -16,6 +15,7 @@ import * as Factory from './handlerFactory.js';
 // }
 
 //Solução 2 usando middlewares para alterar o corpo do objeto query.
+
 export async function aliasTopTours(request, response, next){
     request.query.limit = 5;
     request.query.sort = '-ratingsAverage,-price';
@@ -23,43 +23,47 @@ export async function aliasTopTours(request, response, next){
     next();
 }
 
-export const getAllTours = catchAsync(async function (request, response, next) {
-    //Esperando os documentos de resposta da query do .find();
-    const features = new APIFeatures(Tour.find(), request.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-    const allTours = await features.query;
-            
-    response.status(200).json({
-        status: 'sucess',
-        results: allTours.length,
-        data: {
-            tours: allTours
-        }
-    });
-});
-
-export const getTour = catchAsync( async function (request, response, next){
-    const tour = await Tour.findById(request.params.id).populate({
-        path: 'reviews'
-    });
-
-    if(!tour) return next(new AppError('Tour não encontrado', 404));
-    
-    response.status(200).json({ 
-        status: 'sucess', 
-        data: { tour: tour }
-    });
-});
-
+export const getAllTours = Factory.getAllDocuments(Tour);
+export const getTour = Factory.getDocument(Tour, {   
+    path: 'reviews'   
+})
 export const createNewTour = Factory.createNewDocument(Tour);
 export const updateTour = Factory.updateDocument(Tour);
 export const deleteTour = Factory.deleteOneDocument(Tour);
 
+// export const getAllTours = catchAsync(async function (request, response, next) {
+//     //Esperando os documentos de resposta da query do .find();
+//     const features = new APIFeatures(Tour.find(), request.query)
+//         .filter()
+//         .sort()
+//         .limitFields()
+//         .paginate();
+//     const allTours = await features.query;
+            
+//     response.status(200).json({
+//         status: 'sucess',
+//         results: allTours.length,
+//         data: {
+//             tours: allTours
+//         }
+//     });
+// });
+
+// export const getTour = catchAsync( async function (request, response, next){
+//     const tour = await Tour.findById(request.params.id).populate({
+//         path: 'reviews'
+//     });
+
+//     if(!tour) return next(new AppError('Tour não encontrado', 404));
+    
+//     response.status(200).json({ 
+//         status: 'sucess', 
+//         data: { tour: tour }
+//     });
+// });
+
 // export const createNewTour = catchAsync(async function(request, response, next){
-//     const newTour = await Tour.create(request.body);
+    //     const newTour = await Tour.create(request.body);
 //     response.status(201).json({
 //         status: 'sucess',
 //         tour: newTour
