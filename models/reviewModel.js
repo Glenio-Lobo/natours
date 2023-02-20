@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Tour } from './tourModel.js';
 
 const reviewSchema = mongoose.Schema({
     review: {
@@ -49,6 +50,38 @@ reviewSchema.pre(/^find/, function(next){
     })
 
     next();
+});
+
+// Em métodos estáticos this aponta para o model, schema
+reviewSchema.statics.calculateAverageRatings = async function(tourId){
+    const stats = await this.aggregate([
+        {
+            $match: { tour: tourId } // Seleciona todos os reviews referentes ao tour Id
+        },
+        {
+            $group: {
+                _id: '$tour', // Agrupa as reviews por tour
+                nRatings: { $sum: 1 }, // Soma um para cad documento
+                avgRating: { $avg: '$rating' } // Calcula a média das avaliações
+            }
+        }
+    ]);
+
+    await Tour.findByIdAndUpdate(tourId, {
+        ratingsQuantity: stats[0].nRatings,
+        ratingsAverage: stats[0].avgRating
+    });
+}
+
+reviewSchema.post('save', function(){
+    // this.constructor aponta para o model.
+    // console.log(this.constructor);
+    this.constructor.calculateAverageRatings(this.tour);
+});
+
+// Atualiza ratings e ratingsAverage quando uma review é alterada ou deletada. findOneAndUpdate, findOneAndDelete
+reviewSchema.pre(/^findOneAnd/, function(next){
+
 });
 
 const Review = mongoose.model('Review', reviewSchema);
