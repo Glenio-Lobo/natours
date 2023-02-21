@@ -24,6 +24,7 @@ function handleJWTExpirationError(error){
 }
 
 function sendErrorDev(err, response){
+
     response.status(err.statusCode)
         .json({
             status: 'fail',

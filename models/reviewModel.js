@@ -67,11 +67,20 @@ reviewSchema.statics.calculateAverageRatings = async function(tourId){
         }
     ]);
 
-    await Tour.findByIdAndUpdate(tourId, {
-        ratingsQuantity: stats[0].nRatings,
-        ratingsAverage: stats[0].avgRating
-    });
+    if(stats.length > 0){
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: stats[0].nRatings,
+            ratingsAverage: stats[0].avgRating
+        });
+    }else{
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: 0,
+            ratingsAverage: 4.5
+        });
+    }
 }
+
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 reviewSchema.post('save', function(){
     // this.constructor aponta para o model.
@@ -79,9 +88,18 @@ reviewSchema.post('save', function(){
     this.constructor.calculateAverageRatings(this.tour);
 });
 
-// Atualiza ratings e ratingsAverage quando uma review é alterada ou deletada. findOneAndUpdate, findOneAndDelete
-reviewSchema.pre(/^findOneAnd/, function(next){
+// Atualiza ratings e ratingsAverage quando uma review é alterada ou deletada. findByIdAndUpdate, findByIdAndDelete
+// findByIdAndUpdate ---> findOneAndUpdate({ _id: id })
+// findByIdAndDelete ---> findOneAndDelete({ _id: id })
+reviewSchema.pre(/^findOneAnd/, async function(next){
+    this.reviewDoc = await this.clone().findOne();
+    next();
+});
 
+
+// Só atualiza quando a review ja foi atualizada ou deletada
+reviewSchema.post(/^findOneAnd/, async function(){
+    await this.reviewDoc.constructor.calculateAverageRatings(this.reviewDoc.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);

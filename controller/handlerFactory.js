@@ -63,9 +63,9 @@ export const updateDocument = function(Model){
             new: true,
             runValidators: true
         };
-    
+        
         const doc = await Model.findByIdAndUpdate(request.params.id, request.body, updateOptions);
-    
+                
         if(!doc) return next(new AppError('Documento não encontrado', 404));
     
         response.status(201).json({
