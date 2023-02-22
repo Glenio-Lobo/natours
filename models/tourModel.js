@@ -37,7 +37,8 @@ const toursSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         min: [1, 'A menor avaliação aceitável é 1.'],
-        max: [5, 'A maior validação aceitável é 5.']
+        max: [5, 'A maior validação aceitável é 5.'],
+        set: val => Math.round(val * 10)/10
     },
     ratingsQuantity: {
         type: Number,
@@ -135,6 +136,8 @@ const toursSchema = new mongoose.Schema({
 
 toursSchema.index({ price: 1, ratingsAverage: -1 });
 toursSchema.index({ slug: 1 }, { unique: true });
+toursSchema.index({ startLocation: '2dsphere' });
+
 
 
 toursSchema.virtual('durationWeeks').get(function(){
@@ -183,7 +186,8 @@ toursSchema.pre(/^find/, function(next){
 //Agreggation Middleware -> This aponta para a agregação.
 toursSchema.pre('aggregate', function(next){
     //Adiciona um novo estágio match no inicio do array
-    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+    if(!this.pipeline()[0]['$geoNear'])
+        this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 
     // console.log(this.pipeline());
     next();
