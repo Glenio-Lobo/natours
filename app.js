@@ -1,17 +1,27 @@
-import express from 'express';
-import morgan from "morgan";
-import {router as toursRouter} from './routes/tourRoutes.js';
-import {router as usersRouter} from './routes/userRoutes.js';
-import { router as reviewRouter } from './routes/reviewRoutes.js';
-import { AppError } from './utils/appError.js';
-import globalErrorHandler from './controller/errorController.js';
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
-import mongoSanitize from 'express-mongo-sanitize';
-import xss from 'xss-clean';
 import hpp from 'hpp';
+import path from 'path';
+import morgan from "morgan";
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import express from 'express';
+import { fileURLToPath } from 'url';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
+
+import { AppError } from './utils/appError.js';
+import { router as toursRouter } from './routes/tourRoutes.js';
+import { router as usersRouter } from './routes/userRoutes.js';
+import globalErrorHandler from './controller/errorController.js';
+import { router as reviewRouter } from './routes/reviewRoutes.js';
 
 const app = express();
+const __dirname = fileURLToPath(new URL('./', import.meta.url));
+
+// console.log(__dirname, path.join(__dirname, 'views'));
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 1) Middleware Globais
 app.use(express.json( { 
@@ -52,7 +62,12 @@ app.use(hpp({
     ]
 }));
 
+
 //2) Middleware Específicos
+app.get('/', function(request, response) {
+    response.status(200).render('base'); // Render the base.pug
+})
+
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/reviews', reviewRouter);

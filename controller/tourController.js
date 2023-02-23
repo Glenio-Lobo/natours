@@ -15,7 +15,6 @@ import * as Factory from './handlerFactory.js';
 // }
 
 //Solução 2 usando middlewares para alterar o corpo do objeto query.
-
 export async function aliasTopTours(request, response, next){
     request.query.limit = 5;
     request.query.sort = '-ratingsAverage,-price';
