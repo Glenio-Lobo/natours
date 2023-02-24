@@ -1,11 +1,26 @@
 doctype html
 html 
+    //-
+        Base Layout que será usado para as outras páginas, com o head e footer iguais mudando apenas o conteúdo.
     head
-        title Natours | #{tour}
-        link(rel="stylesheet" href="style.css")
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+        //-Imports
+        link(rel="stylesheet" href="css/style.css")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
         link(rel="shortcut icon" href="img/favicon.png" type="image/png")
+
+        //-Título da página
+        title Natours | Exciting tours for adventurous people
     body 
-        h1 #{tour} 
-        h1 #{user.toUpperCase()}
-        //- h1 The Park Camper
-        p this is some text
+        // Header
+        include _header
+
+        // Content
+        section(class="overview")
+            h1 #{tour}
+
+        // Footer
+        include _footer
+
