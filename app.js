@@ -23,6 +23,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+console.log(path.join(__dirname, 'public'));
 // 1) Middleware Globais
 app.use(express.json( { 
     limit: '10kb'
@@ -65,7 +66,11 @@ app.use(hpp({
 
 //2) Middleware Específicos
 app.get('/', function(request, response) {
-    response.status(200).render('base'); // Render the base.pug
+    response.status(200).render('base', {
+        tour: 'Forest Hiker',
+        user: 'Glenio'
+    }); 
+    // Render the base.pug
 })
 
 app.use('/api/v1/tours', toursRouter);
