@@ -12,14 +12,14 @@ html
         link(rel="shortcut icon" href="img/favicon.png" type="image/png")
 
         //-Título da página
-        title Natours | Exciting tours for adventurous people
+        title Natours | #{title}
     body 
         // Header
         include _header
 
         // Content
-        section(class="overview")
-            h1 #{tour}
+        block content
+            h1 Placeholder Heading
 
         // Footer
         include _footer

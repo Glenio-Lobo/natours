@@ -13,6 +13,7 @@ import { router as toursRouter } from './routes/tourRoutes.js';
 import { router as usersRouter } from './routes/userRoutes.js';
 import globalErrorHandler from './controller/errorController.js';
 import { router as reviewRouter } from './routes/reviewRoutes.js';
+import { router as viewRouter } from './routes/viewRoutes.js';
 
 const app = express();
 const __dirname = fileURLToPath(new URL('./', import.meta.url));
@@ -64,15 +65,8 @@ app.use(hpp({
 }));
 
 
-//2) Middleware Específicos
-app.get('/', function(request, response) {
-    response.status(200).render('base', {
-        tour: 'Forest Hiker',
-        user: 'Glenio'
-    }); 
-    // Render the base.pug
-})
-
+//2) Routes
+app.use('/', viewRouter);
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/reviews', reviewRouter);
