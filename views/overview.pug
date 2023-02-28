@@ -20,33 +20,33 @@ block content
                         h4(class="card__sub-heading") Easy 5-day tour
                         p(class="card__text") Breathtaking hike through the Canadian Banff National Park
 
-                        //- - const cardDataContent = [
-                        //-     {   
-                        //-         hrefIcon: "img/icons.svg#icon-map-pin",
-                        //-         content:"Banff, Canada" 
-                        //-     },
-                        //-     {   
-                        //-         hrefIcon: "img/icons.svg#icon-calendar",
-                        //-         content:"April 2021" 
-                        //-     },
-                        //-     {   
-                        //-         hrefIcon: "img/icons.svg#icon-flag",
-                        //-         content:"3 stops" 
-                        //-     },
-                        //-     {   
-                        //-         hrefIcon: "img/icons.svg#icon-user",
-                        //-         content:"25 people" 
-                        //-     }                      
-                        //- ];
+                        - 
+                            const cardDataContent = [
+                                {   
+                                    hrefIcon: "img/icons.svg#icon-map-pin",
+                                    content:"Banff, Canada" 
+                                },
+                                {   
+                                    hrefIcon: "img/icons.svg#icon-calendar",
+                                    content:"April 2021" 
+                                },
+                                {   
+                                    hrefIcon: "img/icons.svg#icon-flag",
+                                    content:"3 stops" 
+                                },
+                                {   
+                                    hrefIcon: "img/icons.svg#icon-user",
+                                    content:"25 people" 
+                                }                      
+                            ];
 
-                        //- each cardContent in cardDataContent
-                            
-                        .card_data
-                            svg(class="card__icon")
-                                use( xlink:href = "img/icons.svg#icon-map-pin" )
-                            span 25 people
+                        each cardContent in cardDataContent  
+                            .card__data
+                                svg(class="card__icon")
+                                    use( xlink:href = cardContent.hrefIcon )
+                                span= cardContent.content
                     
-                    .card_footer 
+                    .card__footer
                         p
                             span(class="card__footer-value") $297
                             span(class="card__footer-text") per person
