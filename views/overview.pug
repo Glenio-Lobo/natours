@@ -9,34 +9,34 @@ block content
                         .card__picture
                             .card__picture-overlay &nbsp;
                             img(
-                                src="img/tour-1-cover.jpg"
-                                alt="Tour 1" 
+                                src=`img/tours/${tour.imageCover}`
+                                alt=`${tour.name}` 
                                 class="card__picture-img"
                             )
                         h3(class="heading-tertirary")
-                            span The Forest Hiker
+                            span #{tour.name}
                     
                     .card__details
-                        h4(class="card__sub-heading") Easy 5-day tour
-                        p(class="card__text") Breathtaking hike through the Canadian Banff National Park
+                        h4(class="card__sub-heading")= `${tour.difficulty} ${tour.duration}-day tour`
+                        p(class="card__text")= tour.summary
 
                         - 
                             const cardDataContent = [
                                 {   
                                     hrefIcon: "img/icons.svg#icon-map-pin",
-                                    content:"Banff, Canada" 
+                                    content: tour.startLocation.description 
                                 },
                                 {   
                                     hrefIcon: "img/icons.svg#icon-calendar",
-                                    content:"April 2021" 
+                                    content: tour.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
                                 },
                                 {   
                                     hrefIcon: "img/icons.svg#icon-flag",
-                                    content:"3 stops" 
+                                    content: `${tour.locations.length} stops` 
                                 },
                                 {   
                                     hrefIcon: "img/icons.svg#icon-user",
-                                    content:"25 people" 
+                                    content: `${tour.maxGroupSize} people`
                                 }                      
                             ];
 
@@ -48,12 +48,14 @@ block content
                     
                     .card__footer
                         p
-                            span(class="card__footer-value") $297
+                            span(class="card__footer-value")= `$${tour.price}`
+                            | 
                             span(class="card__footer-text") per person
                         
                         p(class="card__ratings")
-                            span(class="card__footer-value") 4.9
-                            span(class="card__footer-text") rating (21)
+                            span(class="card__footer-value")= tour.ratingsAverage
+                            | 
+                            span(class="card__footer-text")= `rating (${tour.ratingsQuantity})`
                         
-                        a(href="#" class="btn btn--green btn--small") Details
+                        a(href=`/tours/${tour.slug}` class="btn btn--green btn--small") Details
                         

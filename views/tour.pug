@@ -1,4 +1,23 @@
 extends base
 
 block content 
-    h1 This is the tour 
+    section(class="section-header")
+        .header__hero 
+            .header__hero-overlay &nbsp;
+            img(class="header__hero-img" src='/img/tour-5-cover.jpg', alt='Tour 5')
+
+        .heading-box
+            h1(class="heading-primary")
+                span The Park Camper Tour
+
+        .heading-box__group
+            .heading-box__detail
+                svg(class="heading-box__icon")
+                    use(xlink:href="img/icons.svg#icon-clock")
+                span(class="heading-box__text") 10 days
+
+            .heading-box__detail
+                svg(class="heading-box__icon")
+                    use(xlink:href="img/icons.svg#icon-map-pin")
+                span(class="heading-box__text") Las Vegas, USA
+        

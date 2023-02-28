@@ -13,8 +13,16 @@ export const getOverview = catchAsync(async function(request, response, next){
     })
 })
 
-export const getTour = function(request, response){
+export const getTour = catchAsync(async function(request, response){
+     // 1) Obtenha os dados da coleção (Incluindo review e guides.)
+     const tour = await Tour.find({slug: request.params.slug}).populate({
+        path: 'reviews',
+        fields: 'review rating user'
+    });
+
+     // 2) Crie o template
+     // 3) Renderize o template
     response.status(200).render('tour', {
-        title: 'Florest Hiker'
+        title: tour[0].name
     })
-}
+})
