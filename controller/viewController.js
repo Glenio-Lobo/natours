@@ -23,6 +23,7 @@ export const getTour = catchAsync(async function(request, response){
      // 2) Crie o template
      // 3) Renderize o template
     response.status(200).render('tour', {
-        title: tour[0].name
+        title: tour[0].name,
+        tour: tour[0]
     })
 })

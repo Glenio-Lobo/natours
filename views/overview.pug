@@ -9,7 +9,7 @@ block content
                         .card__picture
                             .card__picture-overlay &nbsp;
                             img(
-                                src=`img/tours/${tour.imageCover}`
+                                src=`/img/tours/${tour.imageCover}`
                                 alt=`${tour.name}` 
                                 class="card__picture-img"
                             )
@@ -23,19 +23,19 @@ block content
                         - 
                             const cardDataContent = [
                                 {   
-                                    hrefIcon: "img/icons.svg#icon-map-pin",
+                                    hrefIcon: "/img/icons.svg#icon-map-pin",
                                     content: tour.startLocation.description 
                                 },
                                 {   
-                                    hrefIcon: "img/icons.svg#icon-calendar",
+                                    hrefIcon: "/img/icons.svg#icon-calendar",
                                     content: tour.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
                                 },
                                 {   
-                                    hrefIcon: "img/icons.svg#icon-flag",
+                                    hrefIcon: "/img/icons.svg#icon-flag",
                                     content: `${tour.locations.length} stops` 
                                 },
                                 {   
-                                    hrefIcon: "img/icons.svg#icon-user",
+                                    hrefIcon: "/img/icons.svg#icon-user",
                                     content: `${tour.maxGroupSize} people`
                                 }                      
                             ];
@@ -57,5 +57,5 @@ block content
                             | 
                             span(class="card__footer-text")= `rating (${tour.ratingsQuantity})`
                         
-                        a(href=`/tours/${tour.slug}` class="btn btn--green btn--small") Details
+                        a(href=`/tour/${tour.slug}` class="btn btn--green btn--small") Details
                         

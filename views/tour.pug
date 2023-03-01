@@ -1,23 +1,140 @@
 extends base
 
+mixin overviewBox(label,text,icon)
+    .overview-box__detail
+        svg(class="overview-box__icon")
+            use(xlink:href=`/img/icons.svg#icon-${icon}`)
+        span(class="overview-box__label")= label
+        span(class="overview-box__text")= text
+
 block content 
     section(class="section-header")
         .header__hero 
             .header__hero-overlay &nbsp;
-            img(class="header__hero-img" src='/img/tour-5-cover.jpg', alt='Tour 5')
+            img(class="header__hero-img" src=`/img/tours/${tour.imageCover}`, alt=tour.name)
 
         .heading-box
             h1(class="heading-primary")
-                span The Park Camper Tour
+                span #{tour.name}
 
-        .heading-box__group
-            .heading-box__detail
-                svg(class="heading-box__icon")
-                    use(xlink:href="img/icons.svg#icon-clock")
-                span(class="heading-box__text") 10 days
+            .heading-box__group
+                .heading-box__detail
+                    svg(class="heading-box__icon")
+                        use(xlink:href="/img/icons.svg#icon-clock")
+                    span(class="heading-box__text")= `${tour.duration} days`
 
-            .heading-box__detail
-                svg(class="heading-box__icon")
-                    use(xlink:href="img/icons.svg#icon-map-pin")
-                span(class="heading-box__text") Las Vegas, USA
+                .heading-box__detail
+                    svg(class="heading-box__icon")
+                        use(xlink:href="/img/icons.svg#icon-map-pin")
+                    span(class="heading-box__text") #{tour.startLocation.description}
+    
+    section(class="section-description")
+        .overview-box
+            div
+                .overview-box__group
+                    h2(class="heading-secondary ma-bt-lg") Quick facts
+
+                    +overviewBox('Next date', tour.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'}), 'calendar')
+                    +overviewBox('Difficulty', tour.difficulty ,'trending-up')
+                    +overviewBox('Participants', `${tour.maxGroupSize} people`, 'user')
+                    +overviewBox('Rating', `${tour.ratingsAverage} / 5` ,'star')
+                
+                .overview-box__group
+                    h2(class="heading-secondary ma-bt-lg") Your tour guides
+
+                    .overview-box__detail
+                        img(
+                            src="/img/users/user-19.jpg"
+                            alt="Lead guide"
+                            class="overview-box__img"
+                        )
+                        span(class="overview-box__label") Lead guide
+                        span(class="overview-box__text") Steven Miller
+                    
+                    .overview-box__detail
+                        img(
+                            src="/img/users/user-18.jpg"
+                            alt="Tour guide"
+                            class="overview-box__img"
+                        )
+                        span(class="overview-box__label") Tour guide
+                        span(class="overview-box__text") Lisa Brown
+                    
+                    .overview-box__detail
+                        img(
+                            src="/img/users/user-17.jpg"
+                            alt="Intern"
+                            class="overview-box__img"
+                        )
+                        span(class="overview-box__label") Intern
+                        span(class="overview-box__text") Max Smith
+    
+        .description-box
+            h2(class="heading-secondary ma-bt-lg") About the park camper tour
+            p(class="description__text") Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            p(class="description__text") Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!
+
+    section(class="section-pictures")
+        .picture-box
+            img(
+                class="picture-box__img picture-box__img--1"
+                src="/img/tour-5-1.jpg"
+                alt="The Park Camper Tour 1"
+            )
+        
+        .picture-box
+            img(
+                class="picture-box__img picture-box__img--2"
+                src="/img/tour-5-2.jpg"
+                alt="The Park Camper Tour 1"
+            )
+
+        .picture-box
+            img(
+                class="picture-box__img picture-box__img--3"
+                src="/img/tour-5-3.jpg"
+                alt="The Park Camper Tour 1"
+            )
+
+    section(class="section-map")
+        #map
+    
+    section(class="section-reviews")
+        .reviews
+            .reviews__card
+                .reviews__avatar
+                    img(
+                        src="/img/users/user-7.jpg"
+                        alt="Jim Brown"
+                        class="reviews__avatar-img"
+                    )
+
+                    h6(class="reviews__user") Jim Brown
+                
+                p(class="reviews__text") Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque dignissimos sint quo commodi corrupti accusantium veniam saepe numquam.
+
+                .reviews__rating
+                    svg(class="reviews__star reviews__star--active")
+                        use(xlink:href="/img/icons.svg#icon-star")
+                    svg(class="reviews__star reviews__star--active")
+                        use(xlink:href="/img/icons.svg#icon-star")
+                    svg(class="reviews__star reviews__star--active")
+                        use(xlink:href="/img/icons.svg#icon-star")
+                    svg(class="reviews__star reviews__star--active")
+                        use(xlink:href="/img/icons.svg#icon-star")
+                    svg(class="reviews__star reviews__star--active")
+                        use(xlink:href="/img/icons.svg#icon-star")
+    
+    section(class="section-cta")
+        .cta
+            .cta__img.cta__img--logo
+                img(src='/img/logo-white.png', alt='Natours logo')
+
+            img(src='/img/tour-5-2.jpg' alt='' class="cta__img.cta__img--1")
+            img(src='/img/tour-5-1.jpg' alt='' class="cta__img.cta__img--2")
+
+            .cta__content
+                h2(class="heading-secondary") What are you waiting for?
+                p(class="cta__text") 10 days. 1 adventure. Infinite memories. Make it yours today!
+                button(class="btn btn--green span-all-rows") Book tour now!
         
