@@ -27,3 +27,9 @@ export const getTour = catchAsync(async function(request, response){
         tour: tour[0]
     })
 })
+
+export const getLoginForm = catchAsync(async function(request, response){
+    response.status(200).render('login', {
+        title: 'Login'
+    })
+});
