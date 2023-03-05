@@ -3,16 +3,17 @@ html
     //-
         Base Layout que será usado para as outras páginas, com o head e footer iguais mudando apenas o conteúdo.
     head
-        meta(charset="UTF-8")
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        block head
+            meta(charset="UTF-8")
+            meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
-        //-Imports
-        link(rel="stylesheet" href="/css/style.css")
-        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
-        link(rel="shortcut icon" href="/img/favicon.png" type="image/png")
+            //-Imports
+            link(rel="stylesheet" href="/css/style.css")
+            link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
+            link(rel="shortcut icon" href="/img/favicon.png" type="image/png")
 
-        //-Título da página
-        title Natours | #{title}
+            //-Título da página
+            title Natours | #{title}
     body 
         // Header
         include _header
@@ -23,4 +24,6 @@ html
 
         // Footer
         include _footer
+
+        block scripts
 

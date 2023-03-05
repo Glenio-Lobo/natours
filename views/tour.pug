@@ -1,6 +1,9 @@
 extends base
 include _reviewCard
 
+block scripts
+    script(src='/js/mapbox.js')
+
 mixin overviewBox(label,text,icon)
     .overview-box__detail
         svg(class="overview-box__icon")
@@ -78,7 +81,7 @@ block content
                 )
 
     section(class="section-map")
-        #map
+        #map(data-locations = JSON.stringify(tour.locations))
     
     section(class="section-reviews")
         .reviews
