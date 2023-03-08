@@ -54,6 +54,7 @@ export const createUser = catchAsync(async function(request, response, next){
 export const login = catchAsync(async function(request, response, next){
     const { email, password } = request.body;
 
+
     // 1) Verifica se o email e password existe
     if(!email || !password) return next(new AppError(`Por favor insire um email e uma password!`, 400));
 
@@ -61,7 +62,7 @@ export const login = catchAsync(async function(request, response, next){
     const userResult = await User.findOne( { email: email }).select('+password');
 
     if(!userResult || ! (await userResult.correctPassword(password, userResult.password)) ) 
-        return next(new AppError('Email ou Senha Incorretas, ou usuário não existe.', 401));
+        return next(new AppError('Email ou Senha Incorretas, ou usuário não existe.', 400));
 
     // 3) Se tudo ta ok, envia o JWT token para o cliente
     createSendToken(userResult, 200, response);
@@ -75,6 +76,8 @@ export const protectAccess = catchAsync(async function(request, response, next){
     // Autorização deve ser feita contendo um header "Bearer JWT TOKEN", se não for, então rejeita, usuário não está logado.
     if(request.headers.authorization && request.headers.authorization.startsWith('Bearer')) 
         token = request.headers.authorization.split(' ')[1];
+    else if(request.cookies.jwt)
+        token = request.cookies.jwt;
     
     if(!token) return next(new AppError('Você não está logado no sistema. Por favor, entre na sua conta.', 401));
 

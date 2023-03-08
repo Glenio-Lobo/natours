@@ -7,6 +7,8 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import { AppError } from './utils/appError.js';
 import { router as toursRouter } from './routes/tourRoutes.js';
@@ -30,8 +32,20 @@ app.use(express.json( {
     limit: '10kb'
 }));
 
+// Adiciona todos os cookies atuais ao objeto de request.
+app.use(cookieParser());
+
+
 // Set Security HTTP Headers
-app.use(helmet());
+// app.use(helmet({
+    //     contentSecurityPolicy: {
+        //         directives: {
+            //             "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
+            //             "default-src": ["'self'", 'http://127.0.0.1:8000/']
+            //         }
+//     }
+// }));
+
 
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 
@@ -43,12 +57,14 @@ const limiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     message: 'Too many requests from this IP. Please try again in one hour.'
 });
- 
+
 app.use('/api', limiter);
+
+app.use(cors());
 
 // Data Sanitization para NoSql query injections
 app.use(mongoSanitize());
-  
+
 // Data Sanitization para XSS
 app.use(xss());
 
@@ -64,6 +80,10 @@ app.use(hpp({
     ]
 }));
 
+app.use((request, response, next) => {
+    console.log('Cookies ===> ', request.cookies);
+    next();
+})
 
 //2) Routes
 app.use('/', viewRouter);
@@ -75,7 +95,7 @@ app.use('/api/v1/reviews', reviewRouter);
 app.all('*', function(request, response, next) {
     // A reposta sempre será tratada como um erro quando next recebe um argumento, sendo o argument o erro.
     next(new AppError(`Não foi possível encontrar ${request.originalUrl}`, 404));
-
+    
     // const err = new Error(`Não foi possível encontrar ${request.originalUrl}`);
     // err.status = 'fail';
     // err.statusCode = 404;
