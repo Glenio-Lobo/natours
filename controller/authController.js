@@ -19,8 +19,10 @@ function createSendToken(user, statusCode, response){
     const tokenJWT = generateSignToken(user._id); 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRESIN * 24 * 60 * 60 * 1000),
-        secure: false, // Cookie só sera enviado em conexões HTTPS
-        httpOnly: true // Barra o browser de ser capaz de modificar o cookie, apenas http terão permissão
+        secure: true, // Cookie só sera enviado em conexões HTTPS
+        httpOnly: true, // Barra o browser de ser capaz de modificar o cookie, apenas http terão permissão
+        sameSite: 'none', // Necessário para que o chrome envio o cooki para o browser
+        path: '/',
     };
     
     if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
@@ -29,7 +31,7 @@ function createSendToken(user, statusCode, response){
     
     user.password = undefined;
     response.status(statusCode).json({
-        status: 'sucess',
+        status: 'success',
         token: tokenJWT,
         user: user
     })
@@ -99,6 +101,31 @@ export const protectAccess = catchAsync(async function(request, response, next){
     next();
 });
 
+export const isLoggedIn = catchAsync(async function(request, response, next){
+    // 1) Obtenha o token JWT e verifica se ele existe
+    let token;
+
+    if(request.cookies.jwt) {
+        token = request.cookies.jwt;
+
+        // 2) Valida o token
+        // Verifica se o token não expirou e se alguém monipulou os dados.
+        const payload = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        // console.log(payload);
+
+        // 3) Verifica se o user existe
+        const user = await User.findById({ _id: payload.id });
+
+        // 4) Checa se o usuário mudou de senha depois da assinatura do JWT
+        if(!user || user.changedPasswordAfter(payload.iat))  return next();
+        
+        // 5) Permite a passagem se chegar nesse ponto
+        response.locals.user = user; // Template tem acesso ao response locals
+        return next();
+    }
+    next();
+});
+
 export const restrictTo = function(...roles){
     return (request, response, next) => {
 
@@ -135,7 +162,7 @@ export const forgotPassword =  catchAsync(async function(request, response, next
         });
 
         response.status(200).json({
-            status: 'sucess',
+            status: 'success',
             message: 'Token enviado por email.'
         });
 

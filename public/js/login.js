@@ -8,11 +8,20 @@ export const login = async function(email, password){
             data: {
                 email,
                 password
-            }
+            },  
+            withCredentials: true
         });
-    
-        console.log(res);
+        
+        if(res.data.status === 'success'){
+            alert('Logged In');
+            window.setTimeout(()=>{
+                location.assign('/');
+            }, 1500)
+        }
+        
+        console.log("EHRE ==========> ", res, axios.defaults.withCredentials);
     }catch(err){
         console.log(err.response.data);
+        alert(err.response.data.message);
     }
 }

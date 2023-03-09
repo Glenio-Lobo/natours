@@ -1,5 +1,7 @@
 import { login } from './login.js';
 
+axios.defaults.withCredentials = true;
+
 document.querySelector('.form').addEventListener('submit', e => {
     e.preventDefault();
 

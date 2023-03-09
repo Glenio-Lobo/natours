@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 import cors from 'cors';
 
 import { AppError } from './utils/appError.js';
@@ -19,6 +20,7 @@ import { router as viewRouter } from './routes/viewRoutes.js';
 
 const app = express();
 const __dirname = fileURLToPath(new URL('./', import.meta.url));
+dotenv.config({path: './config.env'});
 
 // console.log(__dirname, path.join(__dirname, 'views'));
 
@@ -35,17 +37,20 @@ app.use(express.json( {
 // Adiciona todos os cookies atuais ao objeto de request.
 app.use(cookieParser());
 
+app.use(cors({
+    origin: 'http://localhost:8000',
+    credentials: true
+}));
 
-// Set Security HTTP Headers
+//Set Security HTTP Headers
 // app.use(helmet({
-    //     contentSecurityPolicy: {
-        //         directives: {
-            //             "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
-            //             "default-src": ["'self'", 'http://127.0.0.1:8000/']
-            //         }
+//         contentSecurityPolicy: {
+//                 directives: {
+//                         "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
+//                         "default-src": ["'self'", 'http://127.0.0.1:8000/']
+//                     }
 //     }
 // }));
-
 
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 
@@ -60,14 +65,22 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
-app.use(cors());
-
 // Data Sanitization para NoSql query injections
 app.use(mongoSanitize());
 
 // Data Sanitization para XSS
 app.use(xss());
 
+// CORS attempt
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "http://localhost:8000");
+//     res.header(
+//       "Access-Control-Allow-Headers",
+//       "Origin, X-Requested-With, Content-Type, Accept"
+//     );
+//     next();
+// });
+  
 // Prevent Parameter Polution
 app.use(hpp({
     whitelist: [ 

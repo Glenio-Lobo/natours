@@ -1,6 +1,5 @@
 import { app }  from './app.js';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
 process.on('uncaughtException', err => {
     console.log('!!!!!!!!!!!!!!! UNCAUGHT EXCEPTION !!!!!!!!!!!!!!!\n');
@@ -12,8 +11,6 @@ process.on('uncaughtRejection', err => {
     console.log('!!!!!!!!!!!!!!! UNCAUGHT Rejection !!!!!!!!!!!!!!!\n');
     process.exit(1);
 })
-
-dotenv.config({path: './config.env'});
 
 const PORT = process.env.PORT || 8000;
 const URL = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
