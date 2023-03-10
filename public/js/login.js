@@ -1,10 +1,13 @@
-// import axios from 'axios';
+import axios from 'axios';
+import { showAlerts } from './alerts.js';
+
+axios.defaults.withCredentials = true;
 
 export const login = async function(email, password){
     try{
         const res = await axios({
             method: 'POST',
-            url: 'http://127.0.0.1:8000/api/v1/users/login',
+            url: '/api/v1/users/login',
             data: {
                 email,
                 password
@@ -13,15 +16,14 @@ export const login = async function(email, password){
         });
         
         if(res.data.status === 'success'){
-            alert('Logged In');
+            showAlerts('success', 'Logged In');
             window.setTimeout(()=>{
                 location.assign('/');
             }, 1500)
         }
         
-        console.log("EHRE ==========> ", res, axios.defaults.withCredentials);
     }catch(err){
         console.log(err.response.data);
-        alert(err.response.data.message);
+        showAlerts('error', 'Wrong username or password.');
     }
 }

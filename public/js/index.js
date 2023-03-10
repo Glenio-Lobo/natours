@@ -1,13 +1,20 @@
 import { login } from './login.js';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
-axios.defaults.withCredentials = true;
+// DOM Elements
+const loginForm =  document.querySelector('.form')
 
-document.querySelector('.form').addEventListener('submit', e => {
-    e.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+// Delegation
 
-    login(email, password);
+if(loginForm){
+    loginForm.addEventListener('submit', e => {
+        e.preventDefault();
 
-})
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        login(email, password);
+    })
+}

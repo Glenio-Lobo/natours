@@ -19,10 +19,10 @@ function createSendToken(user, statusCode, response){
     const tokenJWT = generateSignToken(user._id); 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRESIN * 24 * 60 * 60 * 1000),
-        secure: true, // Cookie só sera enviado em conexões HTTPS
-        httpOnly: true, // Barra o browser de ser capaz de modificar o cookie, apenas http terão permissão
-        sameSite: 'none', // Necessário para que o chrome envio o cooki para o browser
-        path: '/',
+        secure: false, // Cookie só sera enviado em conexões HTTPS
+        httpOnly: true // Barra o browser de ser capaz de modificar o cookie, apenas http terão permissão
+        // sameSite: 'none', // Necessário para que o chrome envio o cooki para o browser
+        // path: '/',
     };
     
     if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;

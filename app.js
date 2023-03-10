@@ -19,17 +19,24 @@ import { router as reviewRouter } from './routes/reviewRoutes.js';
 import { router as viewRouter } from './routes/viewRoutes.js';
 
 const app = express();
-const __dirname = fileURLToPath(new URL('./', import.meta.url));
-dotenv.config({path: './config.env'});
+app.enable('trust proxy');
 
-// console.log(__dirname, path.join(__dirname, 'views'));
+const __dirname = fileURLToPath(new URL('./', import.meta.url));
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 console.log(path.join(__dirname, 'public'));
+
 // 1) Middleware Globais
+
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:8000'
+}));
+app.options('*', cors());
+
 app.use(express.json( { 
     limit: '10kb'
 }));
@@ -37,20 +44,16 @@ app.use(express.json( {
 // Adiciona todos os cookies atuais ao objeto de request.
 app.use(cookieParser());
 
-app.use(cors({
-    origin: 'http://localhost:8000',
-    credentials: true
-}));
 
 //Set Security HTTP Headers
-// app.use(helmet({
-//         contentSecurityPolicy: {
-//                 directives: {
-//                         "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
-//                         "default-src": ["'self'", 'http://127.0.0.1:8000/']
-//                     }
-//     }
-// }));
+app.use(helmet({
+        contentSecurityPolicy: {
+                directives: {
+                        "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
+                        "default-src": ["'self'", 'http://127.0.0.1:8000/', 'ws://localhost:1234/']
+                    }
+    }
+}));
 
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 
@@ -70,16 +73,6 @@ app.use(mongoSanitize());
 
 // Data Sanitization para XSS
 app.use(xss());
-
-// CORS attempt
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "http://localhost:8000");
-//     res.header(
-//       "Access-Control-Allow-Headers",
-//       "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     next();
-// });
   
 // Prevent Parameter Polution
 app.use(hpp({
@@ -93,11 +86,6 @@ app.use(hpp({
     ]
 }));
 
-app.use((request, response, next) => {
-    console.log('Cookies ===> ', request.cookies);
-    next();
-})
-
 //2) Routes
 app.use('/', viewRouter);
 app.use('/api/v1/tours', toursRouter);
@@ -108,16 +96,6 @@ app.use('/api/v1/reviews', reviewRouter);
 app.all('*', function(request, response, next) {
     // A reposta sempre será tratada como um erro quando next recebe um argumento, sendo o argument o erro.
     next(new AppError(`Não foi possível encontrar ${request.originalUrl}`, 404));
-    
-    // const err = new Error(`Não foi possível encontrar ${request.originalUrl}`);
-    // err.status = 'fail';
-    // err.statusCode = 404;
-    
-    // response.status(404)
-    // .json({
-    //     status: 'fail',
-    //     message: `Não foi possível encontrar ${request.originalUrl}`
-    // });
 })
 
 // 4) Error Handling Middleware
