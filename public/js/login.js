@@ -35,11 +35,12 @@ export const logout = async function(){
             url: '/api/v1/users/logout',
         })
 
-        console.log(res);
         // reload page
         // .reload(true) força o reload a partir do server e não do cache do browser
-        if(res.data.status === 'success') location.reload(true); 
-
+        if(res.data.status === 'success') location.assign('/');
+        
+        // location.reload(true); 
+        
     }catch(err){
         console.log(err);
         showAlerts('error', 'No Internet. Logged Out.');

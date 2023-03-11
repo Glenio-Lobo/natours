@@ -98,6 +98,7 @@ export const protectAccess = catchAsync(async function(request, response, next){
 
     // 5) Permite a passagem se chegar nesse ponto
     request.user = user;
+    response.locals.user = user;
     next();
 });
 
