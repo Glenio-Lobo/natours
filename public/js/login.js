@@ -27,3 +27,21 @@ export const login = async function(email, password){
         showAlerts('error', 'Wrong username or password.');
     }
 }
+
+export const logout = async function(){
+    try{
+        const res = await axios({
+            method: 'GET',
+            url: '/api/v1/users/logout',
+        })
+
+        console.log(res);
+        // reload page
+        // .reload(true) força o reload a partir do server e não do cache do browser
+        if(res.data.status === 'success') location.reload(true); 
+
+    }catch(err){
+        console.log(err);
+        showAlerts('error', 'No Internet. Logged Out.');
+    }
+}

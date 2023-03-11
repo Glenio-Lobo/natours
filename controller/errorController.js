@@ -23,37 +23,66 @@ function handleJWTExpirationError(error){
     return new AppError(`${error.name}: ${error.message}. Please log in again.`, 401);
 }
 
-function sendErrorDev(err, response){
-
-    response.status(err.statusCode)
-        .json({
-            status: 'fail',
-            message: err.message,
-            stack: err.stack,
-            error: err
-    });
-}
-
-function sendErrorProd(err, response){
-
-    //Erros de operação, mostra o erro ao cliente.
-    if(err.isOperational){
+function sendErrorDev(err, request, response){
+    // API
+    if(request.originalUrl.startsWith('/api')){
         response.status(err.statusCode)
             .json({
                 status: 'fail',
-                message: err.message
+                message: err.message,
+                stack: err.stack,
+                error: err
         });
+    }else{ // Renderiza página no site
+        console.log(err);
+        response.status(err.statusCode).render('error', {
+            title: 'Something went wrong.',
+            message: err.message
+        })
+    }
+}
 
-        //Erros de programação, esconde o erro do cliente.
+function sendErrorProd(err, request, response){
+
+    if(request.originalUrl.startsWith('/api')){
+        // Para API
+        //Erros de operação, mostra o erro ao cliente.
+        if(err.isOperational){
+            return response.status(err.statusCode)
+                .json({
+                    status: 'fail',
+                    message: err.message
+            });
+
+            //Erros de programação, esconde o erro do cliente.
+        } else {
+            console.error(err);
+
+            return response.status(500)
+                .json({
+                    status: 'error',
+                    message: 'Alguma coisa deu muito errado!'
+                })
+        }
+    }
+
+    // Para o site
+    if(err.isOperational){
+        //Erros de operação, mostra o erro ao cliente.
+        response.status(err.statusCode).render('error', {
+            title: 'Something went wrong.',
+            message: err.message
+        })
     } else {
+        //Erros de programação, esconde o erro do cliente.
         console.error(err);
 
-        response.status(500)
-            .json({
-                status: 'error',
-                message: 'Alguma coisa deu muito errado!'
-            })
-    }
+        response.status(err.statusCode).render('error', {
+            title: 'Something went wrong.',
+            message: 'Please try again later.'
+        })
+    } 
+    
 }
 
 export default function(err, request, response, next) {
@@ -61,7 +90,7 @@ export default function(err, request, response, next) {
     err.status = err.status || 'error';
     
     if(process.env.NODE_ENV === 'development'){    
-        sendErrorDev(err, response);
+        sendErrorDev(err, request, response);
     }else if(process.env.NODE_ENV === 'production'){
         let error = {};
 
@@ -70,7 +99,8 @@ export default function(err, request, response, next) {
         else if(err.name === 'ValidationError') error = handleValidationError(err);
         else if(err.name === 'JsonWebTokenError') error = handleJWTError(err);
         else if(err.name === 'TokenExpiredError') error = handleJWTExpirationError(err);
-        
-        sendErrorProd(error, response);
+        else error = err;
+
+        sendErrorProd(error, request, response);
     }
 }

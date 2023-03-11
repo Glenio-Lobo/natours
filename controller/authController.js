@@ -101,30 +101,45 @@ export const protectAccess = catchAsync(async function(request, response, next){
     next();
 });
 
-export const isLoggedIn = catchAsync(async function(request, response, next){
+export const logout = function(request, response){
+    response.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+
+    response.status(200).json({
+        status: 'success'
+    })
+}
+
+export const isLoggedIn = async function(request, response, next){
     // 1) Obtenha o token JWT e verifica se ele existe
     let token;
 
     if(request.cookies.jwt) {
-        token = request.cookies.jwt;
-
-        // 2) Valida o token
-        // Verifica se o token não expirou e se alguém monipulou os dados.
-        const payload = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-        // console.log(payload);
-
-        // 3) Verifica se o user existe
-        const user = await User.findById({ _id: payload.id });
-
-        // 4) Checa se o usuário mudou de senha depois da assinatura do JWT
-        if(!user || user.changedPasswordAfter(payload.iat))  return next();
-        
-        // 5) Permite a passagem se chegar nesse ponto
-        response.locals.user = user; // Template tem acesso ao response locals
-        return next();
+        try{
+            token = request.cookies.jwt;
+    
+            // 2) Valida o token
+            // Verifica se o token não expirou e se alguém monipulou os dados.
+            const payload = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+            // console.log(payload);
+    
+            // 3) Verifica se o user existe
+            const user = await User.findById({ _id: payload.id });
+    
+            // 4) Checa se o usuário mudou de senha depois da assinatura do JWT
+            if(!user || user.changedPasswordAfter(payload.iat))  return next();
+            
+            // 5) Permite a passagem se chegar nesse ponto
+            response.locals.user = user; // Template tem acesso ao response locals
+            return next();
+        }catch(err){
+            return next();
+        }
     }
     next();
-});
+};
 
 export const restrictTo = function(...roles){
     return (request, response, next) => {

@@ -563,6 +563,7 @@ var _loginJs = require("./login.js");
 var _runtime = require("regenerator-runtime/runtime");
 // DOM Elements
 const loginForm = document.querySelector(".form");
+const logoutButton = document.querySelector(".nav__el--logout");
 // Delegation
 if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
@@ -570,11 +571,13 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
     const password = document.getElementById("password").value;
     (0, _loginJs.login)(email, password);
 });
+if (logoutButton) logoutButton.addEventListener("click", (0, _loginJs.logout));
 
 },{"./login.js":"7yHem","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ"}],"7yHem":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
+parcelHelpers.export(exports, "logout", ()=>logout);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alertsJs = require("./alerts.js");
@@ -599,6 +602,21 @@ const login = async function(email, password) {
     } catch (err) {
         console.log(err.response.data);
         (0, _alertsJs.showAlerts)("error", "Wrong username or password.");
+    }
+};
+const logout = async function() {
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: "/api/v1/users/logout"
+        });
+        console.log(res);
+        // reload page
+        // .reload(true) força o reload a partir do server e não do cache do browser
+        if (res.data.status === "success") location.reload(true);
+    } catch (err) {
+        console.log(err);
+        (0, _alertsJs.showAlerts)("error", "No Internet. Logged Out.");
     }
 };
 
@@ -4763,7 +4781,6 @@ const showAlerts = function(type, msg) {
     hideAlert();
     const markup = `<div class="alert alert--${type}">${msg}</div>`;
     document.querySelector("body").insertAdjacentHTML("afterbegin", markup);
-    console.log(document.querySelector("body"), markup);
     window.setTimeout(hideAlert, 5000);
 };
 
