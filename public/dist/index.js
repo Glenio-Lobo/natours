@@ -560,10 +560,13 @@ function hmrAccept(bundle, id) {
 var _esRegexpFlagsJs = require("core-js/modules/es.regexp.flags.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _loginJs = require("./login.js");
+var _updateSettingsJs = require("./updateSettings.js");
 var _runtime = require("regenerator-runtime/runtime");
 // DOM Elements
-const loginForm = document.querySelector(".form");
+const loginForm = document.querySelector(".form--login");
 const logoutButton = document.querySelector(".nav__el--logout");
+const formUserData = document.querySelector(".form-user-data");
+const formUserPass = document.querySelector(".form-user-settings");
 // Delegation
 if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
@@ -572,8 +575,33 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
     (0, _loginJs.login)(email, password);
 });
 if (logoutButton) logoutButton.addEventListener("click", (0, _loginJs.logout));
+if (formUserData) formUserData.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    (0, _updateSettingsJs.updateSettings)({
+        name,
+        email
+    }, "data");
+});
+if (formUserPass) formUserPass.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    document.querySelector(".btn--save-password ").textContent = "Updating...";
+    const passwordCurrent = document.querySelector("#password-current").value;
+    const password = document.querySelector("#password").value;
+    const passwordConfirmed = document.querySelector("#password-confirm").value;
+    await (0, _updateSettingsJs.updateSettings)({
+        passwordCurrent,
+        password,
+        passwordConfirmed
+    }, "password");
+    document.querySelector(".btn--save-password ").textContent = "Save password";
+    document.querySelector("#password-current").value = "";
+    document.querySelector("#password").value = "";
+    document.querySelector("#password-confirm").value = "";
+});
 
-},{"./login.js":"7yHem","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ"}],"7yHem":[function(require,module,exports) {
+},{"./login.js":"7yHem","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./updateSettings.js":"l3cGY"}],"7yHem":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
@@ -6760,6 +6788,26 @@ try {
     else Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}]},["1iop2","f2QDv"], "f2QDv", "parcelRequire11c7")
+},{}],"l3cGY":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "updateSettings", ()=>updateSettings);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alertsJs = require("./alerts.js");
+const updateSettings = async function(data, type) {
+    try {
+        const result = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url: `${type === "data" ? "/api/v1/users/updateMe" : "/api/v1/users/updateMyPassword"}`,
+            data
+        });
+        if (result.data.status === "success") (0, _alertsJs.showAlerts)("success", `${type.toUpperCase()} updated successfully!.`);
+    } catch (err) {
+        (0, _alertsJs.showAlerts)("error", err.response.data.message);
+    }
+};
+
+},{"axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./alerts.js":"6Mcnf"}]},["1iop2","f2QDv"], "f2QDv", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map

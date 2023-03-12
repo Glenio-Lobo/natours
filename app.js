@@ -41,6 +41,10 @@ app.use(express.json( {
     limit: '10kb'
 }));
 
+// Middleware que constrói o corpo do request caso os dados sejam enviados através do form com action='/route' method='POST'
+// extended: true permite enviar dados mais complexos
+app.use(express.urlencoded({ extended: true , limit: '10kb'}));
+
 // Adiciona todos os cookies atuais ao objeto de request.
 app.use(cookieParser());
 

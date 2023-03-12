@@ -31,7 +31,7 @@ export const updateMe = catchAsync(async function(request, response, next){
 
     response.status(200)
         .json({ 
-            status: 'sucess',
+            status: 'success',
             data: {
                 user: updatedUser
             }
@@ -44,7 +44,7 @@ export const deleteMe = catchAsync( async function(request, response, next){
 
     response.status(200)
         .json({
-            status: "sucess",
+            status: "success",
             data: null
         })
 });
