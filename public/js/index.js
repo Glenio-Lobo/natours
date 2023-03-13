@@ -1,7 +1,7 @@
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import 'core-js/actual';
+import "regenerator-runtime/runtime.js";
 
 // DOM Elements
 const loginForm =  document.querySelector('.form--login')

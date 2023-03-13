@@ -17,7 +17,7 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 router.use(authController.protectAccess);
 
 router.patch('/updateMyPassword', authController.updatePassword);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', userController.uploadUserPhoto, userController.resizeUserPhoto, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 // Só administradores tem acesso as funções que vem depois desse middleware

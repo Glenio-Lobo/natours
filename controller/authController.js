@@ -56,7 +56,6 @@ export const createUser = catchAsync(async function(request, response, next){
 export const login = catchAsync(async function(request, response, next){
     const { email, password } = request.body;
 
-
     // 1) Verifica se o email e password existe
     if(!email || !password) return next(new AppError(`Por favor insire um email e uma password!`, 400));
 
