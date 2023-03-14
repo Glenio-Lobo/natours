@@ -577,12 +577,8 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
 if (logoutButton) logoutButton.addEventListener("click", (0, _loginJs.logout));
 if (formUserData) formUserData.addEventListener("submit", function(e) {
     e.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    (0, _updateSettingsJs.updateSettings)({
-        name,
-        email
-    }, "data");
+    const form = new FormData(formUserData);
+    (0, _updateSettingsJs.updateSettings)(form, "data");
 });
 if (formUserPass) formUserPass.addEventListener("submit", async (e)=>{
     e.preventDefault();

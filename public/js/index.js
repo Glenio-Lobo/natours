@@ -9,6 +9,7 @@ const logoutButton = document.querySelector('.nav__el--logout');
 const formUserData = document.querySelector('.form-user-data');
 const formUserPass = document.querySelector('.form-user-settings');
 
+
 // Delegation
 
 if(loginForm){
@@ -30,10 +31,9 @@ if(formUserData){
     formUserData.addEventListener('submit', function(e){
         e.preventDefault();
         
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-
-        updateSettings({ name, email }, 'data');
+        const form = new FormData(formUserData);
+        
+        updateSettings(form, 'data');
     })
 }
 
