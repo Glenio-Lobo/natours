@@ -4,7 +4,7 @@ import { AppError } from "../utils/appError.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { promisify } from 'util';
-import sendEmail from "../utils/email.js";
+import Email from "../utils/email.js";
 import crypto from 'crypto';
 
 function generateSignToken(id){
@@ -49,6 +49,11 @@ export const createUser = catchAsync(async function(request, response, next){
         passwordChanged: request.body.passwordChanged,
         role: request.body.role
     });
+
+    const url = `${request.protocol}://${request.get('host')}/me`;
+    console.log(url);
+
+    await new Email(newUser, url).sendWelcome();
 
     createSendToken(newUser, 201, response);
 });
@@ -165,16 +170,9 @@ export const forgotPassword =  catchAsync(async function(request, response, next
 
     // 3) Envie o token através do email
     const resetUrl = `${request.protocol}://${request.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-    const message = `Esqueceu a sua senha? Envie um PATCH request com a sua nova password e passwordConfirmed para o link: ${resetUrl}.\n
-    Se você não requisitou a redefinição da senha, por favor ignore esse email!`;
-    const subject = 'O seu token para resetar a senha. ( Válido por 10 minutos apenas )';
 
     try{
-        await sendEmail({
-            email: user.email,
-            message,
-            subject
-        });
+        await new Email(user, resetUrl).sendPasswordReset();
 
         response.status(200).json({
             status: 'success',

@@ -50,14 +50,19 @@ app.use(cookieParser());
 
 
 //Set Security HTTP Headers
-app.use(helmet({
+app.use(
+    helmet({
         contentSecurityPolicy: {
-                directives: {
-                        "script-src": ["'self'", 'https://cdnjs.cloudflare.com'], // Permite scripts vindos do domínio do cloudflare.com
-                        "default-src": ["'self'", 'http://127.0.0.1:8000/', 'ws://localhost:1234/']
-                    }
-    }
-}));
+          directives: {
+            defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+            baseUri: ["'self'"],
+            fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+            scriptSrc: ["'self'", 'https:', 'http:', 'blob:']
+            // styleSrc: ["'self'", 'https:', 'http:', 'unsafe-inline'],
+          },
+        }
+    })
+  );
 
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 

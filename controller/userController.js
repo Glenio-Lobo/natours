@@ -40,7 +40,7 @@ export const resizeUserPhoto = catchAsync(async function(request, response, next
 
     request.file.filename = `user-${request.user.id}-${Date.now()}.jpeg`;
 
-    await sharp(request.files.imageCover.buffer)
+    await sharp(request.file.buffer)
         .resize(500, 500)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
