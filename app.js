@@ -1,4 +1,3 @@
-;
 import path from 'path';
 import express from 'express';
 import hpp from 'hpp';
@@ -35,10 +34,7 @@ app.enable('trust proxy');
 // 1) Middleware Globais
 
 // Implmentando CORS Headers
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:8000'
-}));
+app.use(cors());
 app.options('*', cors());
 
 // Definindo o local onde os arquivos estáticos(views, etc) serão encontrados.
@@ -54,13 +50,13 @@ app.use(
             fontSrc: ["'self'", 'https:', 'http:', 'data:'],
             scriptSrc: ["'self'", 'https:', 'http:', 'blob:']
             // styleSrc: ["'self'", 'https:', 'http:', 'unsafe-inline'],
-          },
-        }
+          }
+        },
+        crossOriginEmbedderPolicy: false
     })
 );
   
 
-console.log(process.env.NODE_ENV);
 if(process.env.NODE_ENV === 'development'){    
     app.use(morgan('dev')); 
 }
@@ -124,5 +120,5 @@ app.all('*', function(request, response, next) {
 // 4) Error Handling Middleware
 app.use(globalErrorHandler)
 
-export { app };
+export default app ;
 

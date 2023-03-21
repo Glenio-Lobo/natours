@@ -1,5 +1,6 @@
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
+// import { bookTour } from './stripe.js';
 import 'core-js/actual';
 import "regenerator-runtime/runtime.js";
 
@@ -8,10 +9,11 @@ const loginForm =  document.querySelector('.form--login')
 const logoutButton = document.querySelector('.nav__el--logout');
 const formUserData = document.querySelector('.form-user-data');
 const formUserPass = document.querySelector('.form-user-settings');
+const tourBookingButton = document.getElementById('book-tour');
 
+console.log(tourBookingButton);
 
 // Delegation
-
 if(loginForm){
     loginForm.addEventListener('submit', e => {
         e.preventDefault();
@@ -53,5 +55,14 @@ if(formUserPass){
         document.querySelector('#password-current').value = '';
         document.querySelector('#password').value = '';
         document.querySelector('#password-confirm').value = '';
+    })
+}
+
+if(tourBookingButton){
+    tourBookingButton.addEventListener('click', async (e) => {
+        e.target.textContent = 'Processing...';
+        const tourId = e.target.dataset.tourId;
+        await bookTour(tourId);
+        e.target.textContent = 'Book tour now!';
     })
 }

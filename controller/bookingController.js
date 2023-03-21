@@ -4,7 +4,6 @@ import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/appError.js';
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-console.log(process.env.STRIPE_SECRET_KEY, process.env.NODE_ENV);
 
 export const getCheckoutSession = catchAsync( async function(request, response, next){
     // 1) Encontre o tour
@@ -19,11 +18,15 @@ export const getCheckoutSession = catchAsync( async function(request, response, 
         client_reference_id: request.param.tourID,
         line_items: [
             {
-                name: `${tour.name} Tour`,
-                description: tour.summary,
-                // images: tour.images
-                amount: tour.price * 100, // É especificado em centavos.
-                currency: 'usd',
+                price_data: {
+                    currency: 'usd',
+                    unit_amount: tour.price * 100,
+                    product_data: {
+                        name: `${tour.name} Tour`,
+                        description: tour.summary,
+                        // images: tour.images
+                    }
+                },
                 quantity: 1
             }
         ],
