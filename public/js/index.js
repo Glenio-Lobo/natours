@@ -1,6 +1,6 @@
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
-// import { bookTour } from './stripe.js';
+import { bookTour } from './stripe.js';
 import 'core-js/actual';
 import "regenerator-runtime/runtime.js";
 
@@ -10,8 +10,6 @@ const logoutButton = document.querySelector('.nav__el--logout');
 const formUserData = document.querySelector('.form-user-data');
 const formUserPass = document.querySelector('.form-user-settings');
 const tourBookingButton = document.getElementById('book-tour');
-
-console.log(tourBookingButton);
 
 // Delegation
 if(loginForm){

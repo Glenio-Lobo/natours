@@ -1,17 +1,26 @@
-import Stripe from 'stripe';
 import axios from 'axios';
+import { showAlerts } from './alerts.js';
+import { PUBLIC_STRIPE_KEY } from '../../keys.js';
 
-// const stripe = Stripe(process.env.STRIPE_PUBLIC_KEY);
-// console.log('teste', process.env.STRIPE_PUBLIC_KEY);
+// Se colocar o script v3 do stripe na base.pug, use window.Stripe.
+// Variável global Stripe é criada pelo script do stripe definido no tour.pug
+const stripe = Stripe(PUBLIC_STRIPE_KEY);
+console.log('teste');
 
 export const bookTour = async function(tourId) {
     // 1) Obtenha a sessão do checkout do server
-    // const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`)
-    // console.log(session);
-
-    console.log('teste');
-    
     // 2) Cria um checkout form  e a cobrança do cartão
+    try{
+        const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`)
 
+        // redirectToCheckout tá defasado, redirecione manualmente usando o url da session.
+        // location.assign(session.data.session.url);
 
+        await stripe.redirectToCheckout({
+            sessionId: session.data.session.id
+        });
+    }catch(err){
+        console.log(err);
+        showAlerts('error', err);
+    }
 }

@@ -14,6 +14,9 @@ html
 
             //-Título da página
             title Natours | #{title}
+
+            block scripts
+                script(type="module" src="/dist/index.js" defer)
     body 
         // Header
         include _header
@@ -24,10 +27,6 @@ html
 
         // Footer
         include _footer
-
-
-        block scripts
-            script(type="module" src="/dist/index.js")
         
         //- script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js")
 
