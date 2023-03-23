@@ -23,7 +23,7 @@ export const login = async function(email, password){
         }
         
     }catch(err){
-        console.log(err.response.data);
+        // console.log(err.response.data);
         showAlerts('error', 'Wrong username or password.');
     }
 }
@@ -42,7 +42,7 @@ export const logout = async function(){
         // location.reload(true); 
         
     }catch(err){
-        console.log(err);
+        // console.log(err);
         showAlerts('error', 'No Internet. Logged Out.');
     }
 }

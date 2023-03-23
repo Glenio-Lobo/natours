@@ -17,7 +17,7 @@ import { router as reviewRouter } from './routes/reviewRoutes.js';
 import { router as bookingRouter } from './routes/bookingRoutes.js';
 import { router as viewRouter } from './routes/viewRoutes.js';
 import { fileURLToPath } from 'url';
-
+import compression from 'compression';
 
 const __dirname = fileURLToPath(new URL('./', import.meta.url));
 
@@ -27,7 +27,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-console.log(path.join(__dirname, 'public'));
+// console.log(path.join(__dirname, 'public'));
 
 app.enable('trust proxy');
 
@@ -103,6 +103,9 @@ app.use(hpp({
         'price'
     ]
 }));
+
+// Responsável pelas compressão do texto enviado ao cliente
+app.use(compression());
 
 //2) Routes
 app.use('/', viewRouter);

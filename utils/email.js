@@ -45,7 +45,6 @@ class Email {
     async send(template, subject){
         // Envia os emails
         // 1) Renderiza o HTML do email baseado em um Template do PUG
-        console.log(__dirname);
         const html = pug.renderFile(`${__dirname}/views/emails/${template}.pug`, {
             firstName: this.firstName,
             url: this.url,

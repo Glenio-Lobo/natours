@@ -5,7 +5,6 @@ import { PUBLIC_STRIPE_KEY } from '../../keys.js';
 // Se colocar o script v3 do stripe na base.pug, use window.Stripe.
 // Variável global Stripe é criada pelo script do stripe definido no tour.pug
 const stripe = Stripe(PUBLIC_STRIPE_KEY);
-console.log('teste');
 
 export const bookTour = async function(tourId) {
     // 1) Obtenha a sessão do checkout do server
