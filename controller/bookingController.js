@@ -19,7 +19,7 @@ export const getCheckoutSession = catchAsync( async function(request, response, 
         // success_url: `${request.protocol}://${request.get('host')}/?tour=${request.params.tourID}&user=${request.user.id}&price=${tour.price}`,
         cancel_url: `${request.protocol}://${request.get('host')}/tour/${tour.slug}`,
         customer_email: request.user.email,
-        client_reference_id: request.param.tourID,
+        client_reference_id: request.params.tourID,
         line_items: [
             {
                 price_data: {
@@ -59,9 +59,14 @@ export const getCheckoutSession = catchAsync( async function(request, response, 
 // });
 
 async function createBookingCheckout(session){
+    // console.log(session, session.customer_email);
+
     const tour = session.client_reference_id;
     const user = (await User.findOne({email: session.customer_email})).id;
-    const price = session.line_items[0].price_data.unit_amount / 100;
+    const price = session.amount_subtotal / 100;
+
+    // console.log("Valores Originais: ", session.client_reference_id, session.customer_email, session.amount_subtotal);
+    // console.log("Valores alterados: ", tour, user, price);
 
     await Booking.create({
         tour,
@@ -69,7 +74,7 @@ async function createBookingCheckout(session){
         price
     });
 
-    response.redirect(request.originalUrl.split('?')[0]);
+    // response.redirect(request.originalUrl.split('?')[0]);
 }
 
 export const webhookCheckout = function(request, response, next){
