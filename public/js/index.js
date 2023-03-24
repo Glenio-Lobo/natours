@@ -33,8 +33,8 @@ if(formUserData){
         e.preventDefault();
         
         const form = new FormData(formUserData);
-        
-        updateSettings(form, 'data');
+
+        updateSettings( { name: form.get('name'), email: form.get('email') }, 'data');
     })
 }
 
