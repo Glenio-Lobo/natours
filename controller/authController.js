@@ -15,7 +15,7 @@ function generateSignToken(id){
     );
 }
 
-function createSendToken(user, statusCode, response){
+function createSendToken(user, statusCode, request, response){
     const tokenJWT = generateSignToken(user._id); 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRESIN * 24 * 60 * 60 * 1000),
@@ -25,7 +25,8 @@ function createSendToken(user, statusCode, response){
         // path: '/',
     };
     
-    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    if(request.secure || request.headers['x-forwarded-proto'] === 'https') cookieOptions.secure = true;
 
     response.cookie('jwt', tokenJWT, cookieOptions);
     
@@ -55,7 +56,7 @@ export const createUser = catchAsync(async function(request, response, next){
 
     await new Email(newUser, url).sendWelcome();
 
-    createSendToken(newUser, 201, response);
+    createSendToken(newUser, 201, request, response);
 });
 
 export const login = catchAsync(async function(request, response, next){
@@ -71,7 +72,7 @@ export const login = catchAsync(async function(request, response, next){
         return next(new AppError('Email ou Senha Incorretas, ou usuário não existe.', 400));
 
     // 3) Se tudo ta ok, envia o JWT token para o cliente
-    createSendToken(userResult, 200, response);
+    createSendToken(userResult, 200, request, response);
 });
 
 // O usuário só terá acesso a certas rotas se estiver logado, essa função garante isso!
@@ -224,7 +225,7 @@ export const resetPassword = catchAsync(async function(request, response, next){
     await user.save();
 
     // 4) Login automático do usuário
-    createSendToken(user, 200, response);
+    createSendToken(user, 200, request, response);
 });
 
 /*
@@ -246,5 +247,5 @@ export const updatePassword = catchAsync(async function(request, response ,next)
     await user.save();
 
     // 4) Login the user e envie o JWT token
-    createSendToken(user, 200, response);
+    createSendToken(user, 200, request, response);
 });

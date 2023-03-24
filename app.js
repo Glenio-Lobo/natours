@@ -16,6 +16,7 @@ import { router as usersRouter } from './routes/userRoutes.js';
 import { router as reviewRouter } from './routes/reviewRoutes.js';
 import { router as bookingRouter } from './routes/bookingRoutes.js';
 import { router as viewRouter } from './routes/viewRoutes.js';
+import * as bookingController from './controller/bookingController.js';
 import { fileURLToPath } from 'url';
 import compression from 'compression';
 
@@ -70,6 +71,14 @@ const limiter = rateLimit({
 });
 
 app.use('/api', limiter);
+
+// O body usado no webhook não pode ser no formato JSON, deve ser no formato stream.
+// Por isso foi colocado antes do express.json()
+app.post('/webhook-checkout', 
+    express.raw({type: 'application/json'}), 
+    bookingController.webhookCheckout
+);
+
 
 // Body Parser Middlewares
 

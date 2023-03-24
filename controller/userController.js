@@ -9,6 +9,7 @@ import sharp from 'sharp';
  * Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files. 
  * It is written on top of busboy for maximum efficiency.
  * 
+ * Cria um objeto .files no request se for mais de um arquivo ou .file se for um arquivo.
  * Se não for especificado um caminho, salva na memória.
 */
 // const multerStorage = multer.diskStorage({
