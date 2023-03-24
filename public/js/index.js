@@ -1,6 +1,7 @@
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
 import { bookTour } from './stripe.js';
+import { showAlerts } from './alerts.js';
 import 'core-js/actual';
 import "regenerator-runtime/runtime.js";
 
@@ -64,3 +65,6 @@ if(tourBookingButton){
         e.target.textContent = 'Book tour now!';
     })
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if(alertMessage) showAlerts('success', alertMessage, 20);
