@@ -1,9 +1,6 @@
 extends base
 include _reviewCard
 
-block append scripts
-    script(type="text/javascript" src="https://js.stripe.com/v3/")
-
 mixin overviewBox(label,text,icon)
     .overview-box__detail
         svg(class="overview-box__icon")
