@@ -1,0 +1,1 @@
+export const PUBLIC_STRIPE_KEY = 'PUBLIC STRIPE KEY';
