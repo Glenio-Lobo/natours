@@ -566,10 +566,10 @@ body {
 .mapboxgl-popup-content {
   text-align: center;
   font-family: 'Lato', sans-serif;
-  padding: 1.5rem !important;
+  /* padding: 1.5rem !important; */
   font-size: 1.4rem;
-  -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
+  /* -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important; */
+  /* box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important; */
 }
 
 .section-reviews {

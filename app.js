@@ -49,7 +49,8 @@ app.use(
             defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
             baseUri: ["'self'"],
             fontSrc: ["'self'", 'https:', 'http:', 'data:'],
-            scriptSrc: ["'self'", 'https:', 'http:', 'blob:']
+            scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
+            imgSrc: ["'self'", 'data:', 'http:', 'https:']
             // styleSrc: ["'self'", 'https:', 'http:', 'unsafe-inline'],
           }
         },

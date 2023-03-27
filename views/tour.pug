@@ -8,6 +8,21 @@ mixin overviewBox(label,text,icon)
         span(class="overview-box__label")= label
         span(class="overview-box__text")= text
 
+block append head
+    link(
+        rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" 
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""
+    )
+
+block append scripts
+    script(
+        src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+        crossorigin=""
+    )
+    script(type="module" src="/js/map.js")
+
 block content 
     section(class="section-header")
         .header__hero 
