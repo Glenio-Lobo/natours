@@ -581,10 +581,7 @@ if (logoutButton) logoutButton.addEventListener("click", (0, _loginJs.logout));
 if (formUserData) formUserData.addEventListener("submit", function(e) {
     e.preventDefault();
     const form = new FormData(formUserData);
-    (0, _updateSettingsJs.updateSettings)({
-        name: form.get("name"),
-        email: form.get("email")
-    }, "data");
+    (0, _updateSettingsJs.updateSettings)(form, "data");
 });
 if (formUserPass) formUserPass.addEventListener("submit", async (e)=>{
     e.preventDefault();

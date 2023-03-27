@@ -34,7 +34,7 @@ if(formUserData){
         
         const form = new FormData(formUserData);
 
-        updateSettings( { name: form.get('name'), email: form.get('email') }, 'data');
+        updateSettings( form , 'data');
     })
 }
 
